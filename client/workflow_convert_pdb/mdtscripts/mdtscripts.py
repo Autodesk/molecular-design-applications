@@ -2,7 +2,7 @@
 import os
 import sys
 import collections
-
+import json
 import yaml
 
 tasklist = {}
@@ -56,6 +56,52 @@ def from_file(infile):
     import moldesign as mdt
     mol = mdt.read(infile)
     mol.write('out.pkl')
+
+
+@task(inputs={'description': 'string',
+              'molfile': '["Null", File]'},
+      outputs={'mol': 'out.pkl',
+               'pdb': 'out.pdb'},
+      label='Get a molecule from any source')
+def read_molecule(description, molfile):
+    """ All-purpose routine for initializing molecules.
+    The input "description" must be a yaml or JSON file with exactly one
+    of the following key-value pairs:
+     - SMILES: [a smiles string]
+     - IUPAC: [an IUPAC string]
+     - inCHI: [an inchi identifier]
+     - PDB: [a 4-letter PDB code]
+     - filename: filename (indicates that the molecule should be read from the
+               passed "molfile"
+
+    If "asfile" is passed, then "molfile" should also be present. The format
+    will be determined from the filename passed in the description JSON
+    """
+    import moldesign as mdt
+
+    with open(description, 'r') as infile:
+        d = yaml.load(description)
+    assert len(d) == 1
+
+    if 'filename' in d:
+        format, compression = mdt.fileio._get_format(d['filename'])
+        m = mdt.read(molfile, format=format)
+    elif 'smiles' in d:
+        m = mdt.from_smiles(d['smiles'])
+    elif 'iupac' in d:
+        assert len(d) == 1
+        m = mdt.from_name(d['iupac'])
+    elif 'inchi' in d:
+        assert len(d) == 1
+        m = mdt.from_inchi(d['inchi'])
+    else:
+        raise ValueError(description)
+
+    m.write('out.pkl')
+    m.write('out.pdb')
+
+
+
 
 
 @task(inputs={'mdtfile':'File', 'chainid':'string'},
@@ -122,6 +168,40 @@ def combine_molecules(mdtfile1, mdtfile2):
     newmol = mdt.Molecule(m1.atoms + m2.atoms)
     newmol.write('out.pkl')
 
+    
+@task(inputs={'mdtfile': 'File'},
+      outputs={'result': 'energy.json',
+               'doublet_min': 'min.pkl'},
+      label='Calculate vertical detachment energy to neutralize a doublet anion')
+def vertical_detachment_energy(mdtfile):
+    import moldesign as mdt
+
+    mol = mdt.read(mdtfile)
+
+    # anion doublet minimization
+    mol.charge = -1 * mdt.units.q_e
+    mol.set_energy_model(mdt.models.NWChemQM,
+                         basis='sto-3g', theory='uks', multiplicity=2)
+
+    minimization = mol.minimize(nsteps=40)
+    minimization.write('min.pkl')
+    mol.write('min.pdb')
+    e_anion = mol.potential_energy
+
+    # neutral calc
+    mol.charge = 0 * mdt.units.q_e
+    mol.energy_model.params.theory = 'rks'
+    mol.energy_model.params.multiplicity = 1
+    neutral = mol.calculate(use_cache=True)  # shouldn't have to do the cache thing ...
+    e_neutral = neutral.potential_energy
+
+    result = e_anion - e_neutral
+
+    with open('energy.json', 'w') as outfile:
+        json.dump({'value': result.value_in(mdt.units.eV),
+                   'units': 'eV'},
+                  outfile)
+
 
 if __name__ == '__main__':
     arg = sys.argv[1]
@@ -138,3 +218,5 @@ if __name__ == '__main__':
         funcname = sys.argv[1]
         locals()[funcname](*sys.argv[2:])
 
+
+        
