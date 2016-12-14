@@ -1,9 +1,10 @@
 import React from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 // import MDTSelector from 'mdt-selector';
-import { Nbmolviz3dReact } from 'nbmolviz3d';
+import Molecule3d from 'molecule-3d-for-react';
 import WorkflowNodeRecord from '../records/workflow_node_record';
 import viewEmptyImage from '../../img/view_empty.png';
+import pdbToJson from '../utils/pdb_to_json';
 
 require('../../css/view.scss');
 
@@ -24,8 +25,9 @@ function View(props) {
       />
     );
     */
+    const modelData = pdbToJson.convert(props.workflowNode.modelData);
     view = (
-      <Nbmolviz3dReact modelData={props.workflowNode.modelData} />
+      <Molecule3d modelData={modelData} />
     );
   } else {
     view = (

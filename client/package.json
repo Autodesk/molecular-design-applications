@@ -9,7 +9,7 @@
     "immutable": "^3.8.1",
     "keymirror": "^0.1.1",
     "material-ui": "^0.16.2",
-    "nbmolviz3d": "git://github.com/Autodesk/molecule-3d-for-react.git#75272e8c7edd3489656ffd44fad8e053174f7810",
+    "molecule-3d-for-react": "^0.2.4",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "babel-core": "^6.7.7",
     "babel-loader": "^6.2.4",
+    "babel-polyfill": "^6.16.0",
     "babel-preset-latest": "^6.16.0",
     "babel-preset-react": "^6.5.0",
     "chai": "^3.5.0",
@@ -41,14 +42,16 @@
     "node-sass": "^3.6.0",
     "phantomjs-prebuilt": "^2.1.7",
     "sass-loader": "^3.2.0",
+    "sinon": "^2.0.0-pre.4",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.0",
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "test": "karma start",
+    "test": "karma start --single-run",
+    "tdd": "karma start",
     "build": "webpack -p",
-    "watch": "webpack -p --watch",
+    "watch": "webpack --watch",
     "dev": "webpack-dev-server  --host 0.0.0.0 --content-base public/ --config webpack.config.js --progress --colors"
   },
   "author": "Autodesk Bio/Nano",

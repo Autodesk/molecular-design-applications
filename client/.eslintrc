@@ -5,6 +5,10 @@
     "document": true,
     "fetch": true,
     "FileReader": true,
+    "it": true,
+    "describe": true,
+    "beforeEach": true,
+    "afterEach": true,
   },
   "rules": {
     "import/no-unresolved": 1,
