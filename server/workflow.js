@@ -1,6 +1,16 @@
-/********************************
- * /workflow routes
- ********************************/
+/**
+ * workflow routes
+ */
+const Path = require('path');
+const Fs = require('fs-extended');
+const express = require('express');
+const Busboy = require('busboy');
+const ShortId = require('shortid');
+const Promise = require('bluebird');
+const Hash = require('object-hash');
+const Docker = require('dockerode');
+
+const router = new express.Router();
 
 /* workflow server remote address */
 var WORKFLOW_SERVER_ADDRESS = process.env.WORKFLOW_SERVER_ADDRESS || 'localhost:9000';
@@ -11,9 +21,9 @@ const INPUTS = 'inputs';
 const OUTPUTS = 'outputs';
 
 /* Redis constants */
-const REDIS_WORKFLOW_EMAIL_SET = 'workflow_emails';//redis<SET>
-const REDIS_WORKFLOW_STATUS = 'workflow_status';//redis<HASH>
-const REDIS_WORKFLOW_ERRORS = 'workflow_errors';//redis<HASH>
+const REDIS_WORKFLOW_EMAIL_SET = 'workflow_emails'; // redis<SET>
+const REDIS_WORKFLOW_STATUS = 'workflow_status'; // redis<HASH>
+const REDIS_WORKFLOW_ERRORS = 'workflow_errors'; // redis<HASH>
 
 /* Values for posting workflows */
 const FORM_FIELD_EMAIL = 'email';
@@ -28,20 +38,10 @@ const WORKFLOW_STATE = {
   running: 'running',
   finished: 'finished',
   failed: 'failed',
-  none: 'none'
+  none: 'none',
 };
 
-var Path = require('path');
-var Fs = require('fs-extended');
-var express = require('express');
-var router = express.Router();
-var Busboy = require('busboy');
-var ShortId = require('shortid');
-var Promise = require("bluebird");
-var Hash = require("object-hash");
-var Docker = require("dockerode");
-
-var docker = new Docker({socketPath: '/var/run/docker.sock'});
+const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
 Fs.ensureDirSync(WORKFLOW_TEMP_FOLDER);
 Fs.ensureDirSync(WORKFLOW_WORK_FOLDER);
@@ -80,7 +80,7 @@ router.get('/:workflowId', (req, res, next) => {
       getWorkflowState(workflowId)
         .then((state) => {
           if (state == WORKFLOW_STATE.finished) {
-            //Return the final data
+            // Return the final data
             var outputPath = Path.join(getWorkflowOutputsPath(workflowId), OUTPUT_FILE_NAME);
             res.sendFile(outputPath);
           } else if (state == WORKFLOW_STATE.failed) {
@@ -152,7 +152,7 @@ router.post('/run', function (req, res) {
     // console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
     if (fieldname != INPUT_FILE_NAME) {
       console.error('Unrecognized File name [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
-      //Drain the data
+      // Drain the data
       file.resume();
     } else {
       isInput = true;
@@ -192,8 +192,8 @@ router.post('/run', function (req, res) {
           Fs.ensureDirSync(workFolder);
           // Fs.copyDirSync(dataDir, inputsPath);
           Fs.renameSync(dataDir, inputsPath);
-          //Add the email to the set of emails to notify
-          //when this workflow is complete
+          // Add the email to the set of emails to notify
+          // when this workflow is complete
           redis.sadd(REDIS_WORKFLOW_EMAIL_SET, email)
             .then((result) => {
               console.log('Redis result', result);
@@ -244,7 +244,7 @@ router.post('/run', function (req, res) {
  * @param  {[type]} path [description]
  * @return {[type]}      [description]
  */
-function getWorkflowInputMd5(path) //String
+function getWorkflowInputMd5(path) // String
 {
   var files = Fs.listFilesSync(path, {recursive:true});
   files.sort();
@@ -273,23 +273,23 @@ function getWorkflowInputMd5(path) //String
  * @param  {[type]} workflowDir [description]
  * @return {[type]}             [description]
  */
-function executeWorkflow(workflowId) //Promise<Bool>
+function executeWorkflow(workflowId) // Promise<Bool>
 {
   console.log(`executeWorkflow ${workflowId}`);
   getDockerImage(WORKFLOW_DOCKER_IMAGE)
     .then((result) => {
-      console.log("got image");
+      console.log('got image');
       return new Promise((resolve, reject) => {
         var workflowDir = getWorkflowPath(workflowId);
         console.log('executeWorkflow workflowId=' + workflowId);
 
         var create_options = {Image:WORKFLOW_DOCKER_IMAGE, WorkingDir:'/outputs', Tty:false};
-        create_options["Labels"] = {};
-        create_options["Labels"][WORKFLOW_KEY] = workflowId;
-        create_options["Cmd"] = ["/bin/sh", "-c", `cp /inputs/${INPUT_FILE_NAME} /outputs/${OUTPUT_FILE_NAME}`];
+        create_options['Labels'] = {};
+        create_options['Labels'][WORKFLOW_KEY] = workflowId;
+        create_options['Cmd'] = ['/bin/sh', '-c', `cp /inputs/${INPUT_FILE_NAME} /outputs/${OUTPUT_FILE_NAME}`];
         create_options.HostConfig = {Binds:[
-          getWorkflowOutputsPath(workflowId) + ":/" + OUTPUTS + ":rw",
-          getWorkflowInputsPath(workflowId) + ":/" + INPUTS + ":rw"
+          getWorkflowOutputsPath(workflowId) + ':/' + OUTPUTS + ':rw',
+          getWorkflowInputsPath(workflowId) + ':/' + INPUTS + ':rw'
         ]};
 
 
@@ -369,7 +369,7 @@ function setWorkflowState(workflowId, state)
   });
 }
 
-function getWorkflowState(workflowId) //Promise
+function getWorkflowState(workflowId) // Promise
 {
   return redis.hget(REDIS_WORKFLOW_STATUS, workflowId)
     .then(function(state) {
@@ -380,14 +380,14 @@ function getWorkflowState(workflowId) //Promise
     });
 }
 
-function getDockerImage(dockerImage) //Promise
+function getDockerImage(dockerImage) // Promise
 {
   return new Promise((resolve, reject) => {
     docker.pull(dockerImage, (err, stream) => {
       if (err) {
         reject(err);
       } else {
-        function onFinished(finishedErr, output) {//output is an array with output json parsed objects 
+        function onFinished(finishedErr, output) { // output is an array with output json parsed objects 
           if (finishedErr) {
             reject(finishedErr);
           } else {
@@ -417,9 +417,9 @@ function processContainerEnd(workflowId) {
             return writeContainerLogs(workflowId, container, false);
           })
           .then(() => {
-            //Finally set the state
+            // Finally set the state
             setWorkflowState(workflowId, result.StatusCode == 0 ? WORKFLOW_STATE.finished : WORKFLOW_STATE.failed);
-            //Then remove the container
+            // Then remove the container
             container.remove({force:1}, (err) => {
               if (err) {
                 console.error(`Workflow=${workflowId} Error removing container=${containerData.Id} err]${err}`);
@@ -431,7 +431,7 @@ function processContainerEnd(workflowId) {
     });
 }
 
-function writeContainerLogs(workflowId, container, isStdOut) {//Promise
+function writeContainerLogs(workflowId, container, isStdOut) { // Promise
   var path = isStdOut ? getWorkflowStdoutPath(workflowId) : getWorkflowStderrPath(workflowId);
   var opts = {
     stdout: isStdOut ? 0 : 1,
@@ -443,7 +443,7 @@ function writeContainerLogs(workflowId, container, isStdOut) {//Promise
         reject(err);
       } else {
         if (logstream != null) {
-          var logs = "";
+          var logs = '';
           logstream.on('end', () => {
             Fs.writeFileSync(path, logs);
             resolve();
@@ -452,7 +452,7 @@ function writeContainerLogs(workflowId, container, isStdOut) {//Promise
             logs += logs + data;
           });
         } else {
-          Fs.writeFileSync(path, "");
+          Fs.writeFileSync(path, '');
           resolve();
         }
       }
@@ -460,7 +460,7 @@ function writeContainerLogs(workflowId, container, isStdOut) {//Promise
   });
 }
 
-function getDockerContainer(workflowId) //Promise
+function getDockerContainer(workflowId) // Promise
 {
   var labelKey = `${WORKFLOW_KEY}=${workflowId}`;
   var labelFilter = JSON.stringify({label:[labelKey]});
@@ -485,8 +485,8 @@ function sendEmailsWorkflowEnded(workflowId)
 
 }
 
-//In case of crashes, check all running workflows and attach listeners to the
-//running containers
+// In case of crashes, check all running workflows and attach listeners to the
+// running containers
 function reattachExistingWorkflowContainers()
 {
   redis.hkeys(REDIS_WORKFLOW_STATUS)
