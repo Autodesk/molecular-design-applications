@@ -1,4 +1,4 @@
-import keyMirror from 'keymirror';
+const keyMirror = require('keymirror');
 
 const statusConstants = keyMirror({
   IDLE: null,
@@ -8,4 +8,4 @@ const statusConstants = keyMirror({
   CANCELED: null,
 });
 
-export default statusConstants;
+module.exports = statusConstants;

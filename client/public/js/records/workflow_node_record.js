@@ -1,5 +1,5 @@
 import { Record } from 'immutable';
-import statusConstants from '../constants/status_constants';
+import statusConstants from '../../../../shared/status_constants';
 
 const WorkflowNodeRecord = new Record({
   id: null,

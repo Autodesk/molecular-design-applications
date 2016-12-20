@@ -8,7 +8,7 @@ import SelectionRecord from '../records/selection_record';
 import UserMessageRecord from '../records/user_message_record';
 import WorkflowRecord from '../records/workflow_record';
 import Workflow from './workflow';
-import statusConstants from '../constants/status_constants';
+import statusConstants from '../../../../shared/status_constants';
 
 class WorkflowRouter extends React.Component {
   componentDidMount() {

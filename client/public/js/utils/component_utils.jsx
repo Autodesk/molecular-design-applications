@@ -1,5 +1,6 @@
 import React from 'react';
-import statusConstants from '../constants/status_constants';
+import statusConstants from '../../../../shared/status_constants';
+
 require('../../css/component_utils.scss');
 
 const componentUtils = {

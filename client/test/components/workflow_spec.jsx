@@ -5,7 +5,7 @@ import { setProps, shallow } from 'enzyme';
 import Workflow from '../../public/js/components/workflow';
 import SelectionRecord from '../../public/js/records/selection_record';
 import WorkflowRecord from '../../public/js/records/workflow_record';
-import statusConstants from '../../public/js/constants/status_constants';
+import statusConstants from '../../../shared/status_constants';
 
 describe('Workflow', () => {
   let clickAbout;
