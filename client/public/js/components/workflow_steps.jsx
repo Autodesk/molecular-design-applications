@@ -1,10 +1,10 @@
 import React from 'react';
+import { statusConstants } from 'molecular-design-applications-shared';
 import Button from './button';
 import SelectionRecord from '../records/selection_record';
 import WorkflowRecord from '../records/workflow_record';
 import WorkflowStep from './workflow_step';
 import selectionConstants from '../constants/selection_constants';
-import statusConstants from '../../../../shared/status_constants';
 import workflowUtils from '../utils/workflow_utils';
 
 require('../../css/workflow_steps.scss');

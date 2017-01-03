@@ -1,5 +1,5 @@
 import { Record } from 'immutable';
-import statusConstants from '../../../../shared/status_constants';
+import { statusConstants } from 'molecular-design-applications-shared';
 
 const WorkflowNodeRecord = new Record({
   id: null,

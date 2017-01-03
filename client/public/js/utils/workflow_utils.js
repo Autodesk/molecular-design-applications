@@ -1,5 +1,5 @@
 import isEmail from 'validator/lib/isEmail';
-import statusConstants from '../../../../shared/status_constants';
+import { statusConstants } from 'molecular-design-applications-shared';
 
 const workflowUtils = {
   /**

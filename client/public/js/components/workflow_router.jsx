@@ -1,5 +1,6 @@
 import React from 'react';
 import { Map as IMap } from 'immutable';
+import { statusConstants } from 'molecular-design-applications-shared';
 import Canceled from './canceled';
 import Errored from './errored';
 import Snackbar from './snackbar';
@@ -8,7 +9,6 @@ import SelectionRecord from '../records/selection_record';
 import UserMessageRecord from '../records/user_message_record';
 import WorkflowRecord from '../records/workflow_record';
 import Workflow from './workflow';
-import statusConstants from '../../../../shared/status_constants';
 
 class WorkflowRouter extends React.Component {
   componentDidMount() {

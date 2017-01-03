@@ -2,7 +2,7 @@ import { Map as IMap, List as IList } from 'immutable';
 import NodeRecord from '../records/node_record';
 import WorkflowNodeRecord from '../records/workflow_node_record';
 import WorkflowRecord from '../records/workflow_record';
-import statusConstants from '../../../../shared/status_constants';
+import { statusConstants } from 'molecular-design-applications-shared';
 
 const mockApiUtils = {
   run(nodeIds) {

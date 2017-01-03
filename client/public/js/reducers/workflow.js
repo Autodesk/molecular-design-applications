@@ -1,6 +1,6 @@
+import { statusConstants } from 'molecular-design-applications-shared';
 import WorkflowRecord from '../records/workflow_record';
 import actionConstants from '../constants/action_constants';
-import statusConstants from '../../../../shared/status_constants';
 
 const initialState = new WorkflowRecord();
 

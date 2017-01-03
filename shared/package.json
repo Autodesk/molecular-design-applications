@@ -1,0 +1,27 @@
+{
+  "name": "molecular-design-applications-shared",
+  "version": "0.0.1",
+  "description": "Modules shared between front and back ends",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "author": "Autodesk BioNano",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "babel-core": "^6.7.7",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.18.0",
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-loader": "^1.3.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.8.0",
+    "webpack": "^1.14.0"
+  },
+  "dependencies": {
+    "keymirror": "^0.1.1"
+  }
+}
