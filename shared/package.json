@@ -8,7 +8,7 @@
     "build": "webpack"
   },
   "author": "Autodesk BioNano",
-  "license": "Apache-2.0",
+  "license": "UNLICENSED",
   "devDependencies": {
     "babel-core": "^6.7.7",
     "babel-loader": "^6.2.4",
