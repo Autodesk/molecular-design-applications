@@ -20,6 +20,7 @@
     "dockerode": "^2.3.1",
     "express": "^4.14.0",
     "fs-extended": "^0.2.1",
+    "molecular-design-applications-shared": "../shared",
     "morgan": "^1.7.0",
     "object-hash": "^1.1.5",
     "promise-redis": "0.0.5",

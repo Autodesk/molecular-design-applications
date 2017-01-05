@@ -2,10 +2,10 @@ import React from 'react';
 import sinon from 'sinon';
 import { expect } from 'chai';
 import { setProps, shallow } from 'enzyme';
+import statusConstants from 'molecular-design-applications-shared';
 import Workflow from '../../public/js/components/workflow';
 import SelectionRecord from '../../public/js/records/selection_record';
 import WorkflowRecord from '../../public/js/records/workflow_record';
-import statusConstants from '../../public/js/constants/status_constants';
 
 describe('Workflow', () => {
   let clickAbout;

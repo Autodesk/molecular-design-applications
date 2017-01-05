@@ -1,5 +1,6 @@
 import React from 'react';
-import statusConstants from '../constants/status_constants';
+import { statusConstants } from 'molecular-design-applications-shared';
+
 require('../../css/component_utils.scss');
 
 const componentUtils = {

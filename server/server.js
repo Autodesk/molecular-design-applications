@@ -18,11 +18,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Serve client files
-app.use(express.static(path.join(__dirname, 'client/dist')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Add server routes
 app.use(`${appConstants.VERSION_PREFIX}/workflow`, workflowRouter);
 app.use('/version', versionRouter);
+
+// Redirect any other routes to index.html (single page app)
+app.use(new express.Router().get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+}));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
