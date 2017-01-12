@@ -1,3 +1,4 @@
 cache/
+tmp/
 out.*  # reserved for workflow outputs
 
