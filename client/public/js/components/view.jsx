@@ -1,42 +1,56 @@
 import React from 'react';
-import { Nbmolviz3dReact } from 'nbmolviz3d';
+import $ADSKMOLVIEW from 'molecule-viewer-proxy';
 import loadImg from '../../img/loadAnim.gif';
 
 require('../../css/view.scss');
 
-function View(props) {
-  let view;
-  if (props.loading) {
-    view = (
-      <div className="loading">
-        <div className="animBack">
-          <img src={loadImg} alt="loading" />
+class View extends React.Component {
+  componentDidMount() {
+    this.renderMolecueViewer(this.props.modelData);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.renderMolecueViewer(nextProps.modelData);
+  }
+
+  renderMolecueViewer(modelData) {
+    if (modelData && !this.moleculeViewer) {
+      this.moleculeViewer = new $ADSKMOLVIEW(this.moleculeViewerContainer, {
+        headless: true,
+      });
+
+      // TODO use modelData instead of hard coded pdbid
+      this.moleculeViewer.importPDB('3aid');
+    }
+
+    // TODO colorized like: this.moleculeViewer.setColor('ribbon', 'blue', '1');
+  }
+
+  render() {
+    let view;
+    if (this.props.loading) {
+      view = (
+        <div className="loading">
+          <div className="animBack">
+            <img src={loadImg} alt="loading" />
+          </div>
+          <p className="anim">Loading! Great things ahead...</p>
         </div>
-        <p className="anim">Loading! Great things ahead...</p>
-      </div>
-    );
-  } else if (props.error) {
-    view = (
-      <div>
-        <h3>Error</h3>
-        <p>{props.error}</p>
-      </div>
-    );
-  } else if (props.modelData) {
-    view = (
-      <div>
-        <p>{props.colorized ? 'Colorized!' : ''}</p>
-        <Nbmolviz3dReact
-          modelData={props.modelData}
-        />
+      );
+    } else if (this.props.error) {
+      view = (
+        <div>
+          <h3>Error</h3>
+          <p>{this.props.error}</p>
+        </div>
+      );
+    }
+    return (
+      <div className="view" ref={(c) => { this.moleculeViewerContainer = c; }}>
+        {view}
       </div>
     );
   }
-  return (
-    <div className="view">
-      {view}
-    </div>
-  );
 }
 
 View.propTypes = {

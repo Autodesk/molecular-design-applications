@@ -1,0 +1,31 @@
+{
+  "name": "molecule-viewer-proxy",
+  "version": "0.0.1",
+  "description": "The molecule viewer made into an npm module by copying in the built molecule viewer code",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -p",
+    "dev": "webpack --watch"
+  },
+  "author": "Autodesk BioNano",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.71.0",
+    "webvr-polyfill": "^0.9.25",
+    "xhr2": "^0.1.4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.7.7",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2016": "^6.16.0",
+    "eslint": "^3.13.1",
+    "eslint-config-airbnb": "^14.0.0",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2",
+    "eslint-plugin-react": "^6.9.0",
+    "imports-loader": "^0.7.0",
+    "webpack": "^2.2.0-rc.8"
+  }
+}
