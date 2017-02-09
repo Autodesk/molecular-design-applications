@@ -3,7 +3,6 @@ const cccUtils = require('../utils/ccc_utils');
 const WORKFLOW_IMAGE = 'avirshup/mst:workflows-0.0.1b2';
 
 const workflowUtils = {
-
   /**
    * Performs a CCC job.
    * @param  {BasicBatchProcessRequest} jobJson https://github.com/dionjwa/cloud-compute-cannon/blob/master/src/haxe/ccc/compute/shared/Definitions.hx typedef BasicBatchProcessRequest

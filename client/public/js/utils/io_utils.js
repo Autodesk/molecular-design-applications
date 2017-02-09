@@ -6,11 +6,24 @@ const ioUtils = {
    * @returns {String}
    */
   getInputPdb(inputs) {
-    const pdbIo = inputs.find(input =>
-      input.value.lastIndexOf('.pdb') === input.value.length - 4,
-    );
+    const pdbIndex = ioUtils.getIndexByExtension(inputs, '.pdb');
 
-    return pdbIo ? pdbIo.fetchedValue : null;
+    if (pdbIndex === -1) {
+      return null;
+    }
+
+    return inputs.get(pdbIndex).fetchedValue;
+  },
+
+  /**
+   * Given a list of inputs or outputs, return the index of the first element
+   * that has the given file extension, or -1 if none
+   * @param ios {IList}
+   * @param extension {String}
+   * @returns {String}
+   */
+  getIndexByExtension(ios, extension) {
+    return ios.findIndex(io => io.value.endsWith(extension));
   },
 
   /**
@@ -20,7 +33,7 @@ const ioUtils = {
    */
   formatInputsForServer(inputs) {
     return inputs.map(input =>
-      input.set('fetchedValue', null)
+      input.set('fetchedValue', null),
     ).toJS();
   },
 };

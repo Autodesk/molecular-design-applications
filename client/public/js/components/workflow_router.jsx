@@ -81,8 +81,10 @@ class WorkflowRouter extends React.Component {
     } else {
       routeEl = (
         <Workflow
+          changeLigandSelection={this.props.changeLigandSelection}
           clickAbout={this.props.clickAbout}
           clickRun={this.props.clickRun}
+          clickWorkflowNodeLigandSelection={this.props.clickWorkflowNodeLigandSelection}
           clickWorkflowNodeLoad={this.props.clickWorkflowNodeLoad}
           clickWorkflowNodeEmail={this.props.clickWorkflowNodeEmail}
           clickWorkflowNodeResults={this.props.clickWorkflowNodeResults}
@@ -115,9 +117,11 @@ class WorkflowRouter extends React.Component {
 
 WorkflowRouter.propTypes = {
   canceling: React.PropTypes.bool,
+  changeLigandSelection: React.PropTypes.func,
   clickAbout: React.PropTypes.func.isRequired,
   clickCancel: React.PropTypes.func.isRequired,
   clickRun: React.PropTypes.func.isRequired,
+  clickWorkflowNodeLigandSelection: React.PropTypes.func.isRequired,
   clickWorkflowNodeLoad: React.PropTypes.func.isRequired,
   clickWorkflowNodeEmail: React.PropTypes.func.isRequired,
   clickWorkflowNodeResults: React.PropTypes.func.isRequired,

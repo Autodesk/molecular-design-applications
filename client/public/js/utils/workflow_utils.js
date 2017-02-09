@@ -88,31 +88,63 @@ const workflowUtils = {
    * @returns {Array}
    */
   processInput: async function processInput(workflowId, pdb) {
-    const inputs = await apiUtils.processInputPdb(workflowId, pdb);
+    let inputs = await apiUtils.processInputPdb(workflowId, pdb);
 
     // Find the json status input
-    const jsonInput = inputs.find(input =>
-      input.value.lastIndexOf('.json') === input.value.length - 5,
-    );
-    if (!jsonInput) {
-      throw new Error('Expected a json file in step0 response.');
-    }
-
-    // Get the json data for these inputs
-    jsonInput.fetchedValue = await apiUtils.getIoData(jsonInput.value);
+    inputs = await workflowUtils.fetchIoResults(inputs);
 
     // Get the processed input pdb
-    const pdbInputIndex = inputs.findIndex(input =>
-      input.value.lastIndexOf('.pdb') === input.value.length - 4,
-    );
-    if (pdbInputIndex === -1) {
-      throw new Error('Expected a pdb file in step0 response.');
-    }
-    inputs[pdbInputIndex].fetchedValue = await apiUtils.getPdb(
-      inputs[pdbInputIndex].value,
-    );
+    inputs = await workflowUtils.fetchIoPdbs(inputs);
 
     return inputs;
+  },
+
+  /**
+   * Fetch the results json for any of the given ios with a json url.
+   * Return new ios with fetchedResult set for the json.
+   * @param ios {IList}
+   * @returns {Promise that resolves with IList}
+   */
+  fetchIoResults(ios) {
+    let newIos = ios;
+
+    return Promise.all(ios.map((io) => {
+      if (io.value.endsWith('.json')) {
+        return Promise.resolve();
+      }
+      return apiUtils.getIoData(io.value).then((results) => {
+        // Set newIos to a new list that contains the fetched results data
+        newIos = newIos.set(
+          newIos.indexOf(io), io.set('fetchedValue', results),
+        );
+      });
+
+    // Resolve with the new list of ios
+    })).then(() => newIos);
+  },
+
+  /**
+   * Fetch the pdb for any of the given ios with a pdb url.
+   * Return new ios with fetchedResult set for the pdb data.
+   * @param ios {IList}
+   * @returns {Promise that resolves with an IList}
+   */
+  fetchIoPdbs(ios) {
+    let newIos = ios;
+
+    return Promise.all(ios.map((io) => {
+      if (io.value.endsWith('.pdb')) {
+        return Promise.resolve();
+      }
+      return apiUtils.getPdb(io.value).then((results) => {
+        // Set newIos to a new list that contains the fetched pdb
+        newIos = newIos.set(
+          newIos.indexOf(io), io.set('fetchedValue', results),
+        );
+      });
+
+    // Resolve with the new list of ios
+    })).then(() => newIos);
   },
 };
 

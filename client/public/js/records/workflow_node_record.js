@@ -6,8 +6,6 @@ const WorkflowNodeRecord = new Record({
   node: null,
   status: statusConstants.IDLE,
   modelData: null,
-  fetchingPDB: false,
-  fetchingPDBError: null,
   outputs: [],
 });
 

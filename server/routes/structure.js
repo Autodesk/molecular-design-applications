@@ -36,7 +36,6 @@ router.post('/executeWorkflow0Step0', (req, res, next) => {
     });
 });
 
-
 /**
  * First step in workflow1: selecting a ligand.
  * https://docs.google.com/presentation/d/1qP-8fPpsgtJnZOlg96ySwPACZvGlxT1jIIgjBECoDAE/edit#slide=id.g1c36f8ea4a_0_0

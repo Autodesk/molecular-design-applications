@@ -26,6 +26,8 @@ RUN npm install -g forever nodemon grunt grunt-cli webpack
 # # Client build/install packages
 # #######################################
 ENV APP /app
+RUN mkdir -p $APP/molecule_viewer
+ADD ./molecule_viewer/ $APP/molecule_viewer/
 RUN mkdir -p $APP/shared
 ADD ./shared/ $APP/shared/
 WORKDIR $APP/shared
@@ -41,7 +43,7 @@ RUN npm install
 
 RUN touch .env
 RUN echo "NODE_ENV=production" >> .env
-# Will gather (at least) .eslintignore, .lslintrc, .env (optional)
+# Will gather (at least) .eslintignore, .eslintrc, .env (optional)
 # if .env exists on the host os, it will overwrite the one created above
 ADD ./client/.e*  $APP/client/
 ADD ./client/.babelrc $APP/client/.babelrc

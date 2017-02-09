@@ -42,8 +42,8 @@ class StatusLoad extends React.Component {
   }
 
   render() {
-    const disabled = this.props.inputFilePending || this.props.fetchingPdb;
-    const inputErrorClass = this.props.fetchingPdbError ? 'error' : '';
+    const disabled = this.props.inputFilePending || this.props.fetchingData;
+    const inputErrorClass = this.props.fetchingDataError ? 'error' : '';
 
     return (
       <div className="status-info status-load">
@@ -89,13 +89,13 @@ class StatusLoad extends React.Component {
 }
 
 StatusLoad.defaultProps = {
-  fetchingPdbError: null,
+  fetchingDataError: null,
   inputFileError: null,
 };
 
 StatusLoad.propTypes = {
-  fetchingPdb: React.PropTypes.bool.isRequired,
-  fetchingPdbError: React.PropTypes.string,
+  fetchingData: React.PropTypes.bool.isRequired,
+  fetchingDataError: React.PropTypes.string,
   onSelectInputFile: React.PropTypes.func.isRequired,
   submitPdbId: React.PropTypes.func.isRequired,
   inputFilePending: React.PropTypes.bool.isRequired,

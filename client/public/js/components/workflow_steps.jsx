@@ -43,6 +43,23 @@ function WorkflowSteps(props) {
     );
   }
 
+  let selectLigandsNode;
+  if (props.workflow.selectLigands) {
+    const status = props.workflow.run.selectedLigand ?
+      statusConstants.COMPLETED : statusConstants.IDLE;
+    const ligandSelectionSelected = props.selection.type ===
+      selectionConstants.WORKFLOW_NODE_LIGAND_SELECTION;
+    selectLigandsNode = (
+      <WorkflowStep
+        primaryText={'Ligand Selection'}
+        number={2}
+        onClick={props.clickWorkflowNodeLigandSelection}
+        selected={ligandSelectionSelected}
+        status={status}
+      />
+    );
+  }
+
   let stepsEl;
   if (!props.error) {
     stepsEl = [
@@ -55,9 +72,10 @@ function WorkflowSteps(props) {
             status={loadStatus}
             onClick={props.clickWorkflowNodeLoad}
           />
+          {selectLigandsNode}
           <WorkflowStep
             primaryText={'Enter email'}
-            number={2}
+            number={selectLigandsNode ? 3 : 2}
             onClick={props.clickWorkflowNodeEmail}
             selected={emailSelected}
             status={emailStatus}
@@ -94,6 +112,7 @@ function WorkflowSteps(props) {
 WorkflowSteps.propTypes = {
   clickAbout: React.PropTypes.func.isRequired,
   clickRun: React.PropTypes.func.isRequired,
+  clickWorkflowNodeLigandSelection: React.PropTypes.func.isRequired,
   clickWorkflowNodeLoad: React.PropTypes.func.isRequired,
   clickWorkflowNodeEmail: React.PropTypes.func.isRequired,
   clickWorkflowNodeResults: React.PropTypes.func.isRequired,

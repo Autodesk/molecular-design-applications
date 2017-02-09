@@ -142,6 +142,7 @@ const runUtils = {
           id: runId,
           workflowId,
           email: email,
+          inputs,
           created: Date.now(),
         };
         log.debug(JSON.stringify(runPayload).substr(0, 300));

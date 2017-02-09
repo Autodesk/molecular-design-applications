@@ -4,14 +4,15 @@ import { statusConstants } from 'molecular-design-applications-shared';
 const RunRecord = new Record({
   canceling: false,
   email: '',
-  fetchingPdb: false,
-  fetchingPdbError: null,
+  fetchingData: false, // for any pdb or io data
+  fetchingDataError: null,
   id: null,
   inputs: new IList(),
-  outputs: new IList(),
-  status: statusConstants.IDLE,
   inputFileError: null,
   inputFilePending: false,
+  outputs: new IList(),
+  selectedLigand: '',
+  status: statusConstants.IDLE,
 });
 
 export default RunRecord;

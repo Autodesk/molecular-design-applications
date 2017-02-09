@@ -10,7 +10,6 @@
     "immutable": "^3.8.1",
     "keymirror": "^0.1.1",
     "molecular-design-applications-shared": "../shared",
-    "nbmolviz3d": "git://github.com/Autodesk/molecule-3d-for-react.git#75272e8c7edd3489656ffd44fad8e053174f7810",
     "querystring": "^0.2.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
@@ -19,6 +18,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
+    "tirrenu": "../molecule_viewer/tirrenu-1.3.2.tgz",
     "validator": "^6.2.0"
   },
   "devDependencies": {
@@ -55,7 +55,7 @@
     "sinon": "^1.17.6",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^2.2.0-rc.3",
+    "webpack": "^2.2.0-rc.8",
     "webpack-dev-server": "^2.2.0-rc.0"
   },
   "scripts": {

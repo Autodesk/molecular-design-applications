@@ -20,7 +20,8 @@ class StatusResults extends React.Component {
   }
 
   render() {
-    const value = Math.round(this.props.outputData.vde.value * 10000) / 10000;
+    // Round so that the number doesn't overflow the UI
+    const value = Math.round(this.props.resultValue * 10000) / 10000;
 
     return (
       <div className="status-results">
@@ -28,7 +29,7 @@ class StatusResults extends React.Component {
           <div className="stat">
             <div className="fontHeader line stat-title">
               <div>OUTPUT ENERGY</div>
-              <div>{this.props.outputData.vde.units}</div>
+              <div>{this.props.resultUnit}</div>
             </div>
             <div className="stat-body">
               <div className="stat-body-item">
@@ -42,8 +43,9 @@ class StatusResults extends React.Component {
               id="morph"
               type="range"
               min="0"
-              max="1"
+              max={this.props.numberOfPdbs - 1}
               step="1"
+              value={this.props.morph}
               onChange={this.onChangeMorph}
             />
           </div>
@@ -72,12 +74,20 @@ class StatusResults extends React.Component {
   }
 }
 
+StatusResults.defaultProps = {
+  outputPdbUrl: '',
+  resultValue: 0,
+  resultUnit: '',
+};
+
 StatusResults.propTypes = {
   onClickColorize: React.PropTypes.func.isRequired,
   onChangeMorph: React.PropTypes.func.isRequired,
+  morph: React.PropTypes.number.isRequired,
+  numberOfPdbs: React.PropTypes.number.isRequired,
   outputPdbUrl: React.PropTypes.string,
-  workflowNodesSize: React.PropTypes.number,
-  outputData: React.PropTypes.object,
+  resultValue: React.PropTypes.number,
+  resultUnit: React.PropTypes.string,
 };
 
 export default StatusResults;

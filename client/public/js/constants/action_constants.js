@@ -1,6 +1,7 @@
 import keyMirror from 'keymirror';
 
 const actionConstants = keyMirror({
+  CHANGE_LIGAND_SELECTION: null,
   CHANGE_MORPH: null,
   CLICK_ABOUT: null,
   CLICK_CANCEL: null,
@@ -8,14 +9,14 @@ const actionConstants = keyMirror({
   CLICK_NODE: null,
   CLICK_RUN: null,
   CLICK_WORKFLOW_NODE: null,
+  CLICK_WORKFLOW_NODE_LIGAND_SELECTION: null,
   CLICK_WORKFLOW_NODE_LOAD: null,
   CLICK_WORKFLOW_NODE_EMAIL: null,
   CLICK_WORKFLOW_NODE_RESULTS: null,
-  FETCHED_INPUT_PDB: null,
-  FETCHED_OUTPUT_PDB: null,
   FETCHED_PDB_BY_ID: null,
   FETCHED_WORKFLOW: null,
   FETCHED_RUN: null,
+  FETCHED_RUN_IO: null,
   GET_PDB: null,
   INPUT_FILE: null,
   INPUT_FILE_COMPLETE: null,

@@ -1,6 +1,7 @@
 const workflows = [
   {
     id: '0',
+    selectLigands: false,
     title: 'Calculate Vertical Detachment Energy',
     bgIndex: 0,
     bgColor: '#3762E9',
@@ -11,6 +12,7 @@ const workflows = [
     viewCount: 0,
   }, {
     id: '1',
+    selectLigands: true,
     title: 'Preparing the outer ligand structure',
     bgColor: '#292E60',
     bgIndex: 1,

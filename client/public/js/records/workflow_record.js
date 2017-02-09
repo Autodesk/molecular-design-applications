@@ -8,8 +8,9 @@ const WorkflowRecord = new Record({
   comingSoon: false,
   creatorImage: null,
   id: null,
-  fetching: false,
+  fetching: false, // for fetching the workflow itself
   fetchingError: null,
+  selectLigands: false,
   run: new RunRecord(),
   runCount: 0,
   title: '',

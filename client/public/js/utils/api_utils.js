@@ -1,4 +1,6 @@
+import { List as IList } from 'immutable';
 import axios from 'axios';
+import IoRecord from '../records/io_record';
 import RunRecord from '../records/run_record';
 import WorkflowRecord from '../records/workflow_record';
 import ioUtils from './io_utils';
@@ -36,11 +38,20 @@ const apiUtils = {
   getRun(runId) {
     return axios.get(`${API_URL}/v1/run/${runId}`).then(res =>
       res.data,
-    ).then(runData =>
-      new WorkflowRecord(Object.assign({}, runData, runData.workflow, {
-        run: new RunRecord(runData),
-      })),
-    );
+    ).then((runData) => {
+      const inputs = runData.inputs ?
+        new IList(runData.inputs.map(input => new IoRecord(input))) :
+        new IList();
+      const outputs = runData.outputs ?
+        new IList(runData.outputs.map(output => new IoRecord(output))) :
+        new IList();
+      return new WorkflowRecord(Object.assign({}, runData, runData.workflow, {
+        run: new RunRecord(Object.assign({}, runData, {
+          inputs,
+          outputs,
+        })),
+      }));
+    });
   },
 
   cancelRun(runId) {
@@ -67,7 +78,9 @@ const apiUtils = {
           throw error;
         }
 
-        return res.data.outputs;
+        return new IList(res.data.outputs.map(output =>
+          new IoRecord(output),
+        ));
       });
   },
 
@@ -77,13 +90,7 @@ const apiUtils = {
    * @returns {Object}
    */
   getIoData(jsonUrl) {
-    return axios.get(jsonUrl).then((res) => {
-      if (!res.data.success) {
-        throw new Error(res.data.errors);
-      }
-
-      return res.data;
-    });
+    return axios.get(jsonUrl).then(res => res.data);
   },
 
   /**

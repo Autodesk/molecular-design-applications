@@ -40,10 +40,11 @@ export function initializeRun(workflowId, runId) {
     try {
       workflow = await apiUtils.getRun(runId);
     } catch (error) {
-      return dispatch({
+      dispatch({
         type: actionConstants.FETCHED_RUN,
         error,
       });
+      return;
     }
 
     dispatch({
@@ -51,52 +52,27 @@ export function initializeRun(workflowId, runId) {
       workflow,
     });
 
-    let inputPdbUrl = null;
-    let i = 0;
-    for (i = 0; i < workflow.run.inputs.length; i++) {
-      if (workflow.run.inputs[i].name === 'prep.pdb') {
-        inputPdbUrl = workflow.run.inputs[i].value;
-        break;
-      }
-    }
+    try {
+      let inputs = workflow.run.inputs;
+      let outputs = workflow.run.outputs;
 
-    let finalOutputPdbUrl = null;
-    for (i = 0; i < workflow.run.outputs.length; i++) {
-      if (workflow.run.outputs[i].name === 'final_structure.pdb') {
-        finalOutputPdbUrl = workflow.run.outputs[i].value;
-        break;
-      }
-    }
+      inputs = await workflowUtils.fetchIoPdbs(inputs);
+      inputs = await workflowUtils.fetchIoResults(inputs);
+      outputs = await workflowUtils.fetchIoPdbs(outputs);
+      outputs = await workflowUtils.fetchIoResults(outputs);
 
-    if (inputPdbUrl) {
-      apiUtils.getPdb(inputPdbUrl).then(modelData =>
-        dispatch({
-          type: actionConstants.FETCHED_INPUT_PDB,
-          modelData,
-        })
-      ).catch(error =>
-        dispatch({
-          type: actionConstants.FETCHED_INPUT_PDB,
-          err: error,
-        })
-      );
+      dispatch({
+        type: actionConstants.FETCHED_RUN_IO,
+        inputs,
+        outputs,
+      });
+    } catch (error) {
+      console.error(error);
+      dispatch({
+        type: actionConstants.FETCHED_RUN_IO,
+        error,
+      });
     }
-
-    if (finalOutputPdbUrl) {
-      apiUtils.getPdb(finalOutputPdbUrl).then(modelData =>
-        dispatch({
-          type: actionConstants.FETCHED_OUTPUT_PDB,
-          modelData,
-        })
-      ).catch(error =>
-        dispatch({
-          type: actionConstants.FETCHED_OUTPUT_PDB,
-          err: error,
-        })
-      );
-    }
-
-    return true;
   };
 }
 
@@ -112,6 +88,12 @@ export function clickWorkflowNode(workflowNodeId) {
   return {
     type: actionConstants.CLICK_WORKFLOW_NODE,
     workflowNodeId,
+  };
+}
+
+export function clickWorkflowNodeLigandSelection() {
+  return {
+    type: actionConstants.CLICK_WORKFLOW_NODE_LIGAND_SELECTION,
   };
 }
 
@@ -257,6 +239,13 @@ export function messageTimeout() {
 export function clickColorize() {
   return {
     type: actionConstants.CLICK_COLORIZE,
+  };
+}
+
+export function changeLigandSelection(ligandString) {
+  return {
+    type: actionConstants.CHANGE_LIGAND_SELECTION,
+    ligandString,
   };
 }
 
