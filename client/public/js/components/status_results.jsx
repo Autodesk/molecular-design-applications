@@ -43,7 +43,7 @@ class StatusResults extends React.Component {
         <div className="stats">
           <div className="stat">
             <div className="fontHeader line stat-title">
-              <div>OUTPUT ENERGY</div>
+              <div>VERTICAL DETACHMENT ENERGY</div>
               <div>{this.props.resultUnit}</div>
             </div>
             <div className="stat-body">
@@ -53,7 +53,7 @@ class StatusResults extends React.Component {
             </div>
           </div>
           <div>
-            <label className="fontHeader morph-label" htmlFor="morph">MORPH</label>
+            <label className="fontHeader morph-label" htmlFor="morph">VIEW TRAJECTORY</label>
             <input
               id="morph"
               type="range"

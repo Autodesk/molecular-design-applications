@@ -100,9 +100,9 @@ function Status(props) {
       const outputResults = props.workflow.run.outputs.get(outputResultsIndex)
         .fetchedValue;
 
-      if (outputResults.singlet_energy) {
-        resultValue = outputResults.singlet_energy.value;
-        resultUnit = outputResults.singlet_energy.units;
+      if (outputResults.vde) {
+        resultValue = outputResults.vde.value;
+        resultUnit = outputResults.vde.units;
       }
     }
 

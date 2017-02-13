@@ -40,8 +40,8 @@ class StatusEmail extends React.Component {
 
   render() {
     const sendText = this.props.email ?
-      `We will send an email to you at ${this.props.email} once your workflow is completed.` :
-      'We will send you an email once your workflow is completed';
+      `We'll send you an email at ${this.props.email} when you start this calculation, and another when it's done.` : // eslint-disable-line max-len
+      'We\'ll send you an email at when you start this calculation, and another when it\'s done.';
 
     return (
       <div className="status=info status-email">
