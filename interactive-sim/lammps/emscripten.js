@@ -1346,7 +1346,7 @@ function integrateWasmJS(Module) {
 integrateWasmJS(Module);
 var ASM_CONSTS = [];
 STATIC_BASE = 1024;
-STATICTOP = STATIC_BASE + 346208;
+STATICTOP = STATIC_BASE + 345936;
 __ATINIT__.push({
  func: (function() {
   __GLOBAL__I_000101();
@@ -1365,7 +1365,7 @@ __ATINIT__.push({
  })
 });
 memoryInitializer = Module["wasmJSMethod"].indexOf("asmjs") >= 0 || Module["wasmJSMethod"].indexOf("interpret-asm2wasm") >= 0 ? "emscripten.js.mem" : null;
-var STATIC_BUMP = 346208;
+var STATIC_BUMP = 345936;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 var tempDoublePtr = STATICTOP;
