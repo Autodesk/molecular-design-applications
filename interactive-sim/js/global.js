@@ -104,7 +104,7 @@ function fireSimulation()
 
 	// NORMAL DYNAMICS
 	let new_temp = [gStartTemp, gEndTemp, gDampTemp];
-	gLammpsWorker.postMessage([MESSAGE_NVT, new_temp]);
+	gLammpsWorker.postMessage([MESSAGE_LANGEVIN, new_temp]);
 	// recenter
 	gLammpsWorker.postMessage([MESSAGE_FIX_RECENTER, gRecenter]);
 	// shake hydrogen

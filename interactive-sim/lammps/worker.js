@@ -22,6 +22,7 @@ xhr.send(null);
 const NAME_FIX_NVT = "fix_nvt";
 const NAME_FIX_ADDFORCE = "fix_addforce";
 const NAME_FIX_RECENTER = "fix_recenter";
+const NAME_FIX_LANGEVIN = "fix_langevin";
 
 var lmpsForWeb = null;
 
@@ -39,6 +40,21 @@ function getTotalEnergy(energyDataString) {
                         totalEnergy += atomEnergy;
         }
         return totalEnergy;
+}
+
+function setUpAsCharmm()
+{
+	if(lmpsForWeb == null || lmpsForWeb == undefined)
+		return;
+	
+	lmpsForWeb.execute_cmd("units real");
+	lmpsForWeb.execute_cmd("dimension 3");
+	lmpsForWeb.execute_cmd("atom_style full");
+	lmpsForWeb.execute_cmd("pair_style lj/charmm/coul/charmm/implicit 8.0 10.0");
+	lmpsForWeb.execute_cmd("bond_style harmonic");
+	lmpsForWeb.execute_cmd("angle_style harmonic");
+	lmpsForWeb.execute_cmd("dihedral_style harmonic");
+	lmpsForWeb.execute_cmd("improper_style harmonic");
 }
 
 /******************************* Web Worker Callback *******************************/
@@ -75,20 +91,33 @@ onmessage = function(e) {
 
 		let d = new Date();
 		let id = d.getTime()%111111;
-			
+		
+		// Create lammps web object
+		lmpsForWeb = new Module.Lammps_Web(id);
+		
 		// MESSAGE_LAMMPS_DATA
 		if(e.data[0] == MESSAGE_LAMMPS_DATA) {
+			setUpAsCharmm();
+
 			let molData = e.data[1];
 			let dataFileName = id.toString() + ".data";
 			FS.createDataFile(dirPath, dataFileName, molData, true, true);
-			lmpsForWeb = new Module.Lammps_Web(id, dataFileName, true);
-
+			let readDataCmd = "read_data " + dirPath + dataFileName;
+			console.log(readDataCmd);
+			lmpsForWeb.execute_cmd(readDataCmd);		
 		}
 		//  MESSAGE_SNAPSHOT_DATA
 		else {
 			let dataFileName = e.data[1];
-			lmpsForWeb = new Module.Lammps_Web(id, dataFileName, false);
+			let readRestartCmd = "read_restart " + dirPath + dataFileName;
+			console.log(readRestartCmd);
+			lmpsForWeb.execute_cmd(readRestartCmd);
 		}
+
+		lmpsForWeb.execute_cmd("neighbor 2.0 bin");
+		lmpsForWeb.execute_cmd("neigh_modify delay 5");
+		lmpsForWeb.execute_cmd("timestep 1");
+		lmpsForWeb.execute_cmd("dielectric 4.0");
 	
 		message.push(true);
 		postMessage(message);
@@ -143,9 +172,27 @@ onmessage = function(e) {
 			break;
 		}
 		// apply settings
+		
 		let nvtFixCmd = "fix " + NAME_FIX_NVT + " all nvt temp " + tempValues[0].toString() + " " + tempValues[1].toString() + " " + tempValues[2].toString(); 
 		console.log("WORKER: " + nvtFixCmd); 
 		lmpsForWeb.add_fix(NAME_FIX_NVT, nvtFixCmd);	
+		break;
+
+	case MESSAGE_LANGEVIN:
+		if(lmpsForWeb == null || lmpsForWeb == undefined)
+			break; 
+		
+		let langeTemp = e.data[1];
+		if(langeTemp == null || langeTemp.length != 3) {
+			console.log('WORKER: Enter temp setting');
+			break;
+		}
+		// apply settings
+		let nveFixCmd = "fix fix_nve all nve";
+		lmpsForWeb.add_fix("fix_nve", nveFixCmd);	
+		let langevinFixCmd = "fix " + NAME_FIX_LANGEVIN + " all langevin " + langeTemp[0].toString() + " " + langeTemp[1].toString() + " " + langeTemp[2].toString() + " 48279"; 
+		console.log("WORKER: " + langevinFixCmd); 
+		lmpsForWeb.add_fix(NAME_FIX_LANGEVIN, langevinFixCmd);	
 		break;
 	
 	// Fix shake by element mass

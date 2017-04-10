@@ -4,6 +4,7 @@ const VALUE_MAX_SNAPSHOTS = 5;
 /****************** Worker Onmessage Cosntants ******************/
 const MESSAGE_RUN_DYNAMICS = 'run_dynamics';
 const MESSAGE_NVT = 'temp_setting';
+const MESSAGE_LANGEVIN = 'langevin_setting';
 
 const MESSAGE_GROUP_ATOMS = 'atom_index';
 
