@@ -83,7 +83,9 @@ function fireSimulation()
 	gLammpsWorker.postMessage("timestep " + gTimestep);
 
 	// check if user interacted with molecule. If so, run minimization
-	if (gIsInteracting != undefined) {
+	if (gIsInteracting != undefined && gAtomSelection != undefined && gAtomSelection.length > 0) {
+		gLammpsWorker.postMessage([MESSAGE_GROUP_ATOMS, [NAME_GROUP_INTERACTION, gAtomSelection]]);
+	
 		// if drag, displace atoms and don't run dynamics
 		if (gIsInteracting == 'drag') {
 			gLammpsWorker.postMessage([MESSAGE_DRAG_MOLECULE, gVector]);
