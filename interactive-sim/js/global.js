@@ -79,11 +79,16 @@ function fireSimulation()
 		return;
 	}
 
+	// clear settings for system 
+	gLammpsWorker.postMessage([MESSAGE_CLEAR]);
+
 	// Check user settings for timestemp
 	gLammpsWorker.postMessage("timestep " + gTimestep);
 
 	// check if user interacted with molecule. If so, run minimization
-	if (gIsInteracting != undefined) {
+	if (gIsInteracting != undefined && gAtomSelection != undefined && gAtomSelection != null && gAtomSelection.length > 0) {
+		gLammpsWorker.postMessage([MESSAGE_GROUP_ATOMS, [NAME_GROUP_INTERACTION, gAtomSelection]]);
+	
 		// if drag, displace atoms and don't run dynamics
 		if (gIsInteracting == 'drag') {
 			gLammpsWorker.postMessage([MESSAGE_DRAG_MOLECULE, gVector]);
@@ -94,24 +99,36 @@ function fireSimulation()
 		// if pull, still perform dynamics			
 		else if (gIsInteracting == 'pull') {
 			// pull is continuous interaction
-			gLammpsWorker.postMessage([MESSAGE_PULL_MOLECULE, gVector]);
+			let addForceCmd = "fix fix_interaction " + NAME_GROUP_INTERACTION + " addforce " + gVector[0].toString() + " " + gVector[1].toString() + " " + gVector[2].toString();
+			gLammpsWorker.postMessage(addForceCmd);
 		}
-	}
-	else /* undefined - no interaction */ {
-		// remove addforce fix in case it was set from earlier
-		gLammpsWorker.postMessage([MESSAGE_PULL_MOLECULE, undefined]);	
 	}
 
 	// NORMAL DYNAMICS
-	let new_temp = [gStartTemp, gEndTemp, gDampTemp];
-	gLammpsWorker.postMessage([MESSAGE_LANGEVIN, new_temp]);
+	let nveFixCmd = "fix fix_nve all nve";
+	gLammpsWorker.postMessage(nveFixCmd);	
+	
+	let langevinFixCmd = "fix fix_langevin all langevin " + gStartTemp.toString() + " " + gEndTemp.toString() + " " + gDampTemp.toString() + " 48279"; 
+	gLammpsWorker.postMessage(langevinFixCmd);
+
 	// recenter
-	gLammpsWorker.postMessage([MESSAGE_FIX_RECENTER, gRecenter]);
+	if(gRecenter) {
+		let recenterCmd = "fix fix_recenter all recenter INIT INIT INIT";
+		gLammpsWorker.postMessage(recenterCmd);	
+	} 
+	else {
+		gLammpsWorker.postMessage([MESSAGE_REMOVE_FIX, "fix_recenter"]); 
+	}
+	
 	// shake hydrogen
-	if(gShakeHydrogen)
-		gLammpsWorker.postMessage([MESSAGE_FIX_SHAKE, [NAME_SHAKE_HYDROGEN, '1.0']]);
-	else
-		gLammpsWorker.postMessage([MESSAGE_FIX_SHAKE, [NAME_SHAKE_HYDROGEN, undefined]]);
+	if(gShakeHydrogen) {
+		let shakeHbondCmd = "fix fix_shake_hbond all shake 0.0001 20 0 m 1.0";
+		gLammpsWorker.postMessage(shakeHbondCmd);
+	}
+	else {
+		gLammpsWorker.postMessage([MESSAGE_REMOVE_FIX, "fix_shake_hbond"]);
+	}
+
 	gLammpsWorker.postMessage([MESSAGE_RUN_DYNAMICS, [gDuration, gOutputFreq]]);
 }
 

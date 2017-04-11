@@ -3,19 +3,13 @@ const VALUE_MAX_SNAPSHOTS = 5;
 
 /****************** Worker Onmessage Cosntants ******************/
 const MESSAGE_RUN_DYNAMICS = 'run_dynamics';
-const MESSAGE_NVT = 'temp_setting';
-const MESSAGE_LANGEVIN = 'langevin_setting';
+const MESSAGE_DRAG_MOLECULE = 'drag_molecule';
+const MESSAGE_REMOVE_FIX = 'remove_fix';
+const MESSAGE_GROUP_ATOMS = 'group_atoms';
 
-const MESSAGE_GROUP_ATOMS = 'atom_index';
-
-const MESSAGE_DRAG_MOLECULE = 'drag';
-const MESSAGE_PULL_MOLECULE = 'pull';
-const MESSAGE_RUN_MINIMIZATION = 'run_minimization';
+const MESSAGE_CLEAR = 'clear';
 
 const MESSAGE_REMOVE_FILE = 'remove_file';
-
-const MESSAGE_FIX_RECENTER = 'fix_recenter';
-const MESSAGE_FIX_SHAKE = 'fix_shake';
 
 /****************** Index Onmessage Constants ******************/
 const MESSAGE_PERFORMANCE = 'performance';
@@ -32,6 +26,5 @@ const MESSAGE_SNAPSHOT_DATA = 'snapshot_data';
 
 /*************** Name Constants ************/
 const NAME_GROUP_INTERACTION = 'group_interaction';
-const NAME_SHAKE_HYDROGEN = 'shake_hydrogen';
 const NAME_VIEWER_INTERACTION_TOOL = 'tool-interaction';
 

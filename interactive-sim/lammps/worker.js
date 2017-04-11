@@ -19,10 +19,7 @@ xhr.onload = function() {
 xhr.send(null);
 
 /******************************* LAMMPS Variables *******************************/
-const NAME_FIX_NVT = "fix_nvt";
-const NAME_FIX_ADDFORCE = "fix_addforce";
 const NAME_FIX_RECENTER = "fix_recenter";
-const NAME_FIX_LANGEVIN = "fix_langevin";
 
 var lmpsForWeb = null;
 
@@ -65,7 +62,8 @@ onmessage = function(e) {
 	/** @type {...} message[1]  **/
 	let message = [];
 	
-	switch(e.data[0]) {	
+	switch(e.data[0]) {
+
 	// Create lammps system
 	case MESSAGE_LAMMPS_DATA:
 	case MESSAGE_SNAPSHOT_DATA:
@@ -139,6 +137,13 @@ onmessage = function(e) {
 		postMessage(message);
 		break;
 
+	case MESSAGE_CLEAR:
+		if(lmpsForWeb == null || lmpsForWeb == undefined)
+			break;
+		lmpsForWeb.check_and_refresh();
+		lmpsForWeb.remove_all_fix();
+		break;	
+
 	// group atoms together 
 	case MESSAGE_GROUP_ATOMS:
 		if(lmpsForWeb == null || lmpsForWeb == undefined)
@@ -158,85 +163,12 @@ onmessage = function(e) {
 			let atomId = atomIndices[i] + 1;
 			atomIdsString = atomIdsString + atomId.toString() + " "; 
 		}
-		lmpsForWeb.set_atoms_group(groupName, atomIdsString.trim());
-		break;
 
-	// Set temperature settings for nvt simulation	
-	case MESSAGE_NVT:
-		if(lmpsForWeb == null || lmpsForWeb == undefined)
-			break; 
+		if(lmpsForWeb.does_group_exist(groupName))
+			lmpsForWeb.execute_cmd("group " + groupName + " clear");
 		
-		let tempValues = e.data[1];
-		if(tempValues == null || tempValues.length != 3) {
-			//console.log('WORKER: Enter temp setting');
-			break;
-		}
-		// apply settings
-		
-		let nvtFixCmd = "fix " + NAME_FIX_NVT + " all nvt temp " + tempValues[0].toString() + " " + tempValues[1].toString() + " " + tempValues[2].toString(); 
-		//console.log("WORKER: " + nvtFixCmd); 
-		lmpsForWeb.add_fix(NAME_FIX_NVT, nvtFixCmd);	
-		break;
-
-	case MESSAGE_LANGEVIN:
-		if(lmpsForWeb == null || lmpsForWeb == undefined)
-			break; 
-		
-		let langeTemp = e.data[1];
-		if(langeTemp == null || langeTemp.length != 3) {
-			//console.log('WORKER: Enter temp setting');
-			break;
-		}
-		// apply settings
-		let nveFixCmd = "fix fix_nve all nve";
-		lmpsForWeb.add_fix("fix_nve", nveFixCmd);	
-		let langevinFixCmd = "fix " + NAME_FIX_LANGEVIN + " all langevin " + langeTemp[0].toString() + " " + langeTemp[1].toString() + " " + langeTemp[2].toString() + " 48279"; 
-		//console.log("WORKER: " + langevinFixCmd); 
-		lmpsForWeb.add_fix(NAME_FIX_LANGEVIN, langevinFixCmd);	
-		break;
-	
-	// Fix shake by element mass
-	case MESSAGE_FIX_SHAKE:
-		if(lmpsForWeb == null || lmpsForWeb == undefined)
-			break;	
-		
-		let shakeSettings = e.data[1];
-		if(shakeSettings == null || shakeSettings == undefined || shakeSettings.length != 2)
-			break;
-		
-		let shakeName = shakeSettings[0];	// shake ID	
-		let massStringValue = shakeSettings[1];	// masses of elements to shake
-		
-		// if mass string value is undefined, remove the fix with the shake ID
-		if(massStringValue == null || massStringValue == undefined)
-		{
-			lmpsForWeb.remove_fix(shakeName);
-		}
-		else
-		{
-			let shakeCmd = "fix " + shakeName + " all shake 0.0001 20 0 m " + massStringValue;
-			//console.log("WORKER: " + shakeCmd);
-			lmpsForWeb.add_fix(shakeName, shakeCmd);
-		}				
-
-		break;
-
-	// Fix recenter	
-	case MESSAGE_FIX_RECENTER:
-		if(lmpsForWeb == null || lmpsForWeb == undefined)
-			break;
-		
-		let recenter = e.data[1];
-		if(recenter)
-		{
-			let recenterCmd = "fix " + NAME_FIX_RECENTER + " all recenter INIT INIT INIT"; 
-			//console.log("WORKER: " + recenterCmd);
-			lmpsForWeb.add_fix(NAME_FIX_RECENTER, recenterCmd);
-		}
-		else
-		{
-			lmpsForWeb.remove_fix(NAME_FIX_RECENTER);
-		}
+		let groupCmd = "group " + groupName + " id " + atomIdsString.trim();
+		lmpsForWeb.execute_cmd(groupCmd);
 		break;
 	
 	// Run dynamics			
@@ -332,45 +264,6 @@ onmessage = function(e) {
 		}	
 		
 		break;
-
-	case MESSAGE_PULL_MOLECULE:
-		if(lmpsForWeb == null || lmpsForWeb == undefined)
-			break;	
-	
-		let addForceVector = e.data[1];
-		
-		// If force vector isn't specified or interaction group does not exist, don't add the fix
-		if(addForceVector == null || addForceVector ==undefined || addForceVector.length !=3 || !lmpsForWeb.does_group_exist(NAME_GROUP_INTERACTION)) {
-			lmpsForWeb.remove_fix(NAME_FIX_ADDFORCE);
-		}
-		else {
-	
-			let addForceCmd = "fix " + NAME_FIX_ADDFORCE + " " + NAME_GROUP_INTERACTION + " addforce " + addForceVector[0].toString() + " " + addForceVector[1].toString() + " " + addForceVector[2].toString();
-			//console.log("WORKER: " + addForceCmd);
-			lmpsForWeb.add_fix(NAME_FIX_ADDFORCE, addForceCmd);
-		}	
-			
-		break;	
-
-	// Run minimization
-	case MESSAGE_RUN_MINIMIZATION:
-		if(lmpsForWeb == null || lmpsForWeb == undefined)
-			break;
-		
-		let outputFreq = e.data[1];
-		if(outputFreq <= 0)
-			break;
-		
-		let runNum = lmpsForWeb.minimize(outputFreq);
-		let posArray = lmpsForWeb.get_frames(runNum);
-		
-		message.length = 0;
-		message.push(MESSAGE_POSITION_DATA);
-		results.push(posArray);
-		//console.log("WORKER: Successfully ran minimization");
-		postMessage(results); 
-		 
-		break;
 	
 	case MESSAGE_REMOVE_FILE:
 		if(e.data.length != 2)
@@ -384,6 +277,18 @@ onmessage = function(e) {
 			//console.log("WORKER: Could not delete file");	
 		}
 		
+		break;
+
+	case MESSAGE_REMOVE_FIX:
+		if(lmpsForWeb == null || lmpsForWeb == undefined)
+			break;
+		
+		let fixName = e.data[1];
+		
+		// remove fix if it exists
+		if(lmpsForWeb.does_fix_exist(fixName))
+			lmpsForWeb.execute_cmd("unfix " + fixName);
+
 		break;
 	
 	case MESSAGE_SIMULATION_BOX:

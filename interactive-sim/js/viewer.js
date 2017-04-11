@@ -26,9 +26,7 @@ const molViewModelSelected = () => {
 	
 	// if atoms were selected, group them!
 	if(selectedAtoms != null && selectedAtoms != undefined && selectedAtoms.length > 0) {
-		gAtomSelection = selectedAtoms;
-		gLammpsWorker.postMessage([MESSAGE_GROUP_ATOMS, [NAME_GROUP_INTERACTION, gAtomSelection]]);
-	
+		gAtomSelection = selectedAtoms;	
 	}
 	else {
 		gAtomSelection = null;
