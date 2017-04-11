@@ -150,8 +150,8 @@ function setUpNew(mol) {
 		loadedMol.lmpsData = LAMMPS_1YU8_20_50;
 		loadedMol.pdbData = PDB_1YU8_20_50;
 		if(loadedMol.name != mol) {
-			gDuration = 50;
-			gOutputFreq = 50;
+			gDuration = 30;
+			gOutputFreq = 30;
 		}
 		
 		document.getElementById('BtnLoadRes-20-50').className = 'BtnLoadNew btn btn-primary';

@@ -52,9 +52,6 @@ var molInteractionTool = {
 		let diffY = Math.abs(event.clientY - this._cachedY);
 		let vector = [diffX * event.normalizedX / 10, diffY * event.normalizedY / 10, 0]; 
 
-		if(vector[0] > 30 || vector[1] > 30)
-			return false;
-		
 		// If both X and Y differences are 0, no need for interaction 
 		if(vector[0] == 0 && vector[1] == 0)
 			return false;
