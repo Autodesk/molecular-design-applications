@@ -143,28 +143,29 @@ function setUpNew(mol) {
         }	
 		
 	// determine which molecule to load
+	var loadButtons = document.getElementsByClassName('BtnLoadNew');
+	setElementsClass(loadButtons, 'BtnLoadNew btn btn-default');
 	switch(mol) {
-	case '1yu8-1-10':
-		loadedMol.lmpsData = LMPS_1YU8_1_10;
-		loadedMol.pdbData = PDB_1YU8_1_10;
+	case '1yu8-20-50':
+		loadedMol.lmpsData = LAMMPS_1YU8_20_50;
+		loadedMol.pdbData = PDB_1YU8_20_50;
 		if(loadedMol.name != mol) {
-			gDuration = 20;
-			gOutputFreq = 20;
+			gDuration = 50;
+			gOutputFreq = 50;
 		}
-		document.getElementById('BtnLoadRes1-10').className = 'btn btn-primary';
-		document.getElementById('BtnLoadRes11-20').className = 'btn btn-default';
+		
+		document.getElementById('BtnLoadRes-20-50').className = 'BtnLoadNew btn btn-primary';
 		break;
 
 	case '1yu8-11-20':
 	default:
-		loadedMol.lmpsData = LMPS_1YU8_11_20;
+		loadedMol.lmpsData = LAMMPS_1YU8_11_20;
 		loadedMol.pdbData = PDB_1YU8_11_20;	
 		if(loadedMol.name != mol) {
-			gDuration = 20;
-			gOutputFreq = 20;
+			gDuration = 100;
+			gOutputFreq = 100;
 		}
-		document.getElementById('BtnLoadRes1-10').className = 'btn btn-default';
-		document.getElementById('BtnLoadRes11-20').className = 'btn btn-primary';
+		document.getElementById('BtnLoadRes-11-20').className = 'BtnLoadNew btn btn-primary';
 		break;
 
 	}
