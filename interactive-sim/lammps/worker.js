@@ -1,7 +1,7 @@
 /******************************* Requirements **************************************/
 self.Module = {
 	preRun: [],
-	print: function(text){ return; },
+	print: function(text){ console.log(text); return; },
 	postRun: function(){ console.log("Finished Running Main"); postMessage([MESSAGE_WORKER_READY, true]); }
 };
 
@@ -103,14 +103,14 @@ onmessage = function(e) {
 			let dataFileName = id.toString() + ".data";
 			FS.createDataFile(dirPath, dataFileName, molData, true, true);
 			let readDataCmd = "read_data " + dirPath + dataFileName;
-			console.log(readDataCmd);
+			//console.log(readDataCmd);
 			lmpsForWeb.execute_cmd(readDataCmd);		
 		}
 		//  MESSAGE_SNAPSHOT_DATA
 		else {
 			let dataFileName = e.data[1];
 			let readRestartCmd = "read_restart " + dirPath + dataFileName;
-			console.log(readRestartCmd);
+			//console.log(readRestartCmd);
 			lmpsForWeb.execute_cmd(readRestartCmd);
 		}
 
@@ -147,7 +147,7 @@ onmessage = function(e) {
 		let groupSettings = e.data[1];
 	
 		if(groupSettings.length != 2 || groupSettings[1] == null || groupSettings[1] == undefined) {
-			console.log("WORKER: Invalid atom selection");
+			//console.log("WORKER: Invalid atom selection");
 			break;
 		}
 		let groupName = groupSettings[0];	
@@ -168,13 +168,13 @@ onmessage = function(e) {
 		
 		let tempValues = e.data[1];
 		if(tempValues == null || tempValues.length != 3) {
-			console.log('WORKER: Enter temp setting');
+			//console.log('WORKER: Enter temp setting');
 			break;
 		}
 		// apply settings
 		
 		let nvtFixCmd = "fix " + NAME_FIX_NVT + " all nvt temp " + tempValues[0].toString() + " " + tempValues[1].toString() + " " + tempValues[2].toString(); 
-		console.log("WORKER: " + nvtFixCmd); 
+		//console.log("WORKER: " + nvtFixCmd); 
 		lmpsForWeb.add_fix(NAME_FIX_NVT, nvtFixCmd);	
 		break;
 
@@ -184,14 +184,14 @@ onmessage = function(e) {
 		
 		let langeTemp = e.data[1];
 		if(langeTemp == null || langeTemp.length != 3) {
-			console.log('WORKER: Enter temp setting');
+			//console.log('WORKER: Enter temp setting');
 			break;
 		}
 		// apply settings
 		let nveFixCmd = "fix fix_nve all nve";
 		lmpsForWeb.add_fix("fix_nve", nveFixCmd);	
 		let langevinFixCmd = "fix " + NAME_FIX_LANGEVIN + " all langevin " + langeTemp[0].toString() + " " + langeTemp[1].toString() + " " + langeTemp[2].toString() + " 48279"; 
-		console.log("WORKER: " + langevinFixCmd); 
+		//console.log("WORKER: " + langevinFixCmd); 
 		lmpsForWeb.add_fix(NAME_FIX_LANGEVIN, langevinFixCmd);	
 		break;
 	
@@ -215,7 +215,7 @@ onmessage = function(e) {
 		else
 		{
 			let shakeCmd = "fix " + shakeName + " all shake 0.0001 20 0 m " + massStringValue;
-			console.log("WORKER: " + shakeCmd);
+			//console.log("WORKER: " + shakeCmd);
 			lmpsForWeb.add_fix(shakeName, shakeCmd);
 		}				
 
@@ -230,7 +230,7 @@ onmessage = function(e) {
 		if(recenter)
 		{
 			let recenterCmd = "fix " + NAME_FIX_RECENTER + " all recenter INIT INIT INIT"; 
-			console.log("WORKER: " + recenterCmd);
+			//console.log("WORKER: " + recenterCmd);
 			lmpsForWeb.add_fix(NAME_FIX_RECENTER, recenterCmd);
 		}
 		else
@@ -281,7 +281,7 @@ onmessage = function(e) {
 			message.push(MESSAGE_POSITION_DATA);
 			message.push(posArray);
 			postMessage(message);
-			console.log("WORKER: Successfully ran dynamics!");
+			//console.log("WORKER: Successfully ran dynamics!");
 		
 		} catch(err) {
 			lmpsForWeb.delete();
@@ -303,7 +303,7 @@ onmessage = function(e) {
 		/** @type {!Array<number>} */	
 		let vector = e.data[1];	
 		if(vector == null || vector.length != 3 || !lmpsForWeb.does_group_exist(NAME_GROUP_INTERACTION)) {
-			console.log('WORKER: Could not displace atoms!');
+			//console.log('WORKER: Could not displace atoms!');
 			break;
 		}
 		
@@ -319,7 +319,7 @@ onmessage = function(e) {
 			message.length = 0;
 			message.push(MESSAGE_POSITION_DATA);
 			message.push(posArray);
-			console.log("WORKER: Successfully ran interaction!");
+			//console.log("WORKER: Successfully ran interaction!");
 			postMessage(message);
 		} catch(err) {
 			lmpsForWeb.delete();
@@ -346,7 +346,7 @@ onmessage = function(e) {
 		else {
 	
 			let addForceCmd = "fix " + NAME_FIX_ADDFORCE + " " + NAME_GROUP_INTERACTION + " addforce " + addForceVector[0].toString() + " " + addForceVector[1].toString() + " " + addForceVector[2].toString();
-			console.log("WORKER: " + addForceCmd);
+			//console.log("WORKER: " + addForceCmd);
 			lmpsForWeb.add_fix(NAME_FIX_ADDFORCE, addForceCmd);
 		}	
 			
@@ -367,7 +367,7 @@ onmessage = function(e) {
 		message.length = 0;
 		message.push(MESSAGE_POSITION_DATA);
 		results.push(posArray);
-		console.log("WORKER: Successfully ran minimization");
+		//console.log("WORKER: Successfully ran minimization");
 		postMessage(results); 
 		 
 		break;
@@ -381,7 +381,7 @@ onmessage = function(e) {
 			let filePath = dirPath + e.data[1];
 			FS.unlink(filePath);
 		} catch(e) {
-			console.log("WORKER: Could not delete file");	
+			//console.log("WORKER: Could not delete file");	
 		}
 		
 		break;
