@@ -46,6 +46,12 @@ function selection(state = initialState, action) {
         type: selectionConstants.WORKFLOW_NODE_RESULTS,
       });
 
+    case actionConstants.CLICK_WORKFLOW_NODE_INTERACTIVE_SIM:
+      return state.merge({
+        id: null,
+        type: selectionConstants.WORKFLOW_NODE_INTERACTIVE_SIM,
+      });
+
     case actionConstants.CLICK_ABOUT:
       return state.merge({
         id: null,

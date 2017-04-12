@@ -63,6 +63,36 @@ function WorkflowSteps(props) {
     );
   }
 
+  let runNode;
+  let interactiveSimNode;
+  if (props.workflow.id === '4') {
+    const selected = props.selection.type === selectionConstants.WORKFLOW_NODE_INTERACTIVE_SIM;
+    const status = statusConstants.IDLE;
+    interactiveSimNode = (
+      <WorkflowStep
+        disabled={!loadCompleted}
+        primaryText={'Interactive Simulation'}
+        number={2}
+        onClick={props.clickWorkflowNodeInteractiveSim}
+        selected={selected}
+        status={status}
+        last
+      />
+    );
+  } else {
+    runNode = (
+      <WorkflowStep
+        disabled={!ligandCompleted}
+        primaryText={'Run'}
+        number={selectLigandsNode ? 3 : 2}
+        onClick={props.clickWorkflowNodeEmail}
+        selected={runSelected}
+        status={runStatus}
+        last={runLast}
+      />
+    );
+  }
+
   let stepsEl;
   if (!props.hideSteps) {
     stepsEl = [
@@ -76,15 +106,8 @@ function WorkflowSteps(props) {
             onClick={props.clickWorkflowNodeLoad}
           />
           {selectLigandsNode}
-          <WorkflowStep
-            disabled={!ligandCompleted}
-            primaryText={'Run'}
-            number={selectLigandsNode ? 3 : 2}
-            onClick={props.clickWorkflowNodeEmail}
-            selected={runSelected}
-            status={runStatus}
-            last={runLast}
-          />
+          {interactiveSimNode}
+          {runNode}
           {resultsNode}
         </ol>
       </div>,
@@ -117,6 +140,7 @@ WorkflowSteps.propTypes = {
   clickWorkflowNodeLoad: React.PropTypes.func.isRequired,
   clickWorkflowNodeEmail: React.PropTypes.func.isRequired,
   clickWorkflowNodeResults: React.PropTypes.func.isRequired,
+  clickWorkflowNodeInteractiveSim: React.PropTypes.func.isRequired,
   hideSteps: React.PropTypes.bool,
   workflow: React.PropTypes.instanceOf(WorkflowRecord).isRequired,
   selection: React.PropTypes.instanceOf(SelectionRecord).isRequired,

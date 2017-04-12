@@ -6,6 +6,7 @@ import StatusAbout from './status_about';
 import StatusLigandSelection from './status_ligand_selection';
 import StatusLoad from './status_load';
 import StatusRun from './status_run';
+import StatusInteractiveSim from './status_interactive_sim';
 import StatusResults from './status_results';
 import WorkflowRecord from '../records/workflow_record';
 import ioUtils from '../utils/io_utils';
@@ -101,6 +102,10 @@ function Status(props) {
           runDisabled={runDisabled}
           submitEmail={props.submitEmail}
         />
+      );
+    } else if (props.selection.type === selectionConstants.WORKFLOW_NODE_INTERACTIVE_SIM) {
+      selection = (
+        <StatusInteractiveSim />
       );
     } else if (
       props.selection.type === selectionConstants.WORKFLOW_NODE_RESULTS &&

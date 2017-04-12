@@ -60,6 +60,7 @@ function Workflow(props) {
         clickWorkflowNodeLoad={props.clickWorkflowNodeLoad}
         clickWorkflowNodeLigandSelection={props.clickWorkflowNodeLigandSelection}
         clickWorkflowNodeEmail={props.clickWorkflowNodeEmail}
+        clickWorkflowNodeInteractiveSim={props.clickWorkflowNodeInteractiveSim}
         clickWorkflowNodeResults={props.clickWorkflowNodeResults}
         selection={props.selection}
         workflow={props.workflow}
@@ -89,6 +90,7 @@ function Workflow(props) {
         loading={props.workflow.fetching || props.workflow.run.fetchingData}
         modelData={selectedModelData}
         selectionStrings={selectionStrings}
+        workflow={props.workflow}
       />
     </div>
   );
@@ -106,6 +108,7 @@ Workflow.propTypes = {
   clickWorkflowNodeLoad: React.PropTypes.func.isRequired,
   clickWorkflowNodeEmail: React.PropTypes.func.isRequired,
   clickWorkflowNodeResults: React.PropTypes.func.isRequired,
+  clickWorkflowNodeInteractiveSim: React.PropTypes.func.isRequired,
   colorized: React.PropTypes.bool.isRequired,
   morph: React.PropTypes.number.isRequired,
   nodes: React.PropTypes.instanceOf(IMap).isRequired,

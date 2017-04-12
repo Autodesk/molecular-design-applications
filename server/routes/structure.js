@@ -67,4 +67,22 @@ router.post('/executeWorkflow1Step0', (req, res, next) => {
     });
 });
 
+// Workflow for interactive molecular dynamics molecule preparation
+router.post('/executeWorkflow4Step0', (req, res, next) => {
+  const inputs = req.body.inputs;
+  if (!inputs) {
+    return next(new Error('No inputs'));
+  }
+
+  return workflowUtils.executeWorkflow1Step0(inputs)
+    .then((jobResult) => {
+      log.debug({ jobId: jobResult.jobId, f: 'executeWorkflow4Step0' });
+      res.send(jobResult);
+    })
+    .error((err) => {
+      log.error(err);
+      next(err);
+    });
+});
+
 module.exports = router;

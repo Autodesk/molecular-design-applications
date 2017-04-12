@@ -8,6 +8,7 @@ const selectionConstants = keyMirror({
   WORKFLOW_NODE_LIGAND_SELECTION: null,
   WORKFLOW_NODE_RESULTS: null,
   WORKFLOW_NODE_RUN: null,
+  WORKFLOW_NODE_INTERACTIVE_SIM: null,
   WORKFLOW: null,
 });
 
