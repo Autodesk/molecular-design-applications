@@ -1,22 +1,29 @@
 /******************************* Requirements **************************************/
-self.Module = {
-	preRun: [],
-	print: function(text){ console.log(text); return; },
-	postRun: function(){ console.log("Finished Running Main"); postMessage([MESSAGE_WORKER_READY, true]); }
-};
-
 importScripts('/interactive-sim/js/constant.js');
+setUpModule();
 
-console.log("WORKER: About to load wasm binary");
-let xhr = new XMLHttpRequest();
-xhr.open('GET', '/interactive-sim/lammps/emscripten.wasm', true);
-xhr.responseType = 'arraybuffer';
-xhr.onload = function() {
-	Module.wasmBinary = xhr.response;
-	console.log("WORKER: importing emscripten.js");
-	importScripts('/interactive-sim/lammps/emscripten.js');
-};
-xhr.send(null);
+function setUpModule() {
+
+	// Set up Module variable
+	self.Module = {
+		preRun: [],
+		print: function(text){ console.log(text); return; },
+		postRun: function(){ console.log("Finished Running Main"); postMessage([MESSAGE_WORKER_READY, true]); }
+	};		
+	console.log("WORKER: About to load wasm binary");
+	
+	// try wasm
+	let xhr = new XMLHttpRequest();
+	xhr.open('GET', '/interactive-sim/lammps/emscripten.wasm', true);
+	xhr.responseType = 'arraybuffer';
+	xhr.onload = function() {
+		Module.wasmBinary = xhr.response;
+		console.log("WORKER: importing emscripten.js");
+		importScripts('/interactive-sim/lammps/emscripten.js');
+	};
+	xhr.send(null);
+}
+
 
 /******************************* LAMMPS Variables *******************************/
 const NAME_FIX_NVE = "fix_nve";
@@ -94,8 +101,16 @@ onmessage = function(e) {
 		let id = d.getTime()%111111;
 		
 		// Create lammps web object
-		lmpsForWeb = new Module.Lammps_Web(id);
-		
+		try {
+			lmpsForWeb = new Module.Lammps_Web(id);
+		} catch(e) {
+			lmpsForWeb.delete();
+			lmpsForWeb = null;
+			console.log("Could not create Lammps object. Reloading module");
+			setUpModule();
+			break;
+		}		
+
 		// MESSAGE_LAMMPS_DATA
 		if(e.data[0] == MESSAGE_LAMMPS_DATA) {
 			setUpAsCharmm();
