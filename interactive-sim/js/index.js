@@ -46,9 +46,11 @@ function initWorker() {
 				// load molecule if Lammps data
 				if(e.data[0] == MESSAGE_LAMMPS_DATA)
 					loadViewerPdb(loadedMol.pdbData);
+				
+				// load from snapshot
 				else {
 					gReady = true;
-					togglePlay(true);
+					togglePlay(false);	
 				}
 			}
 			break;

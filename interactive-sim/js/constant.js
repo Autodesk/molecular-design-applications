@@ -3,16 +3,16 @@ const VALUE_MAX_SNAPSHOTS = 5;
 
 /****************** Worker Onmessage Cosntants ******************/
 const MESSAGE_RUN_DYNAMICS = 'run_dynamics';
-const MESSAGE_NVT = 'temp_setting';
 const MESSAGE_LANGEVIN = 'langevin_setting';
 
-const MESSAGE_GROUP_ATOMS = 'atom_index';
+const MESSAGE_GROUP_ATOMS = 'group_atom_by_index';
 
 const MESSAGE_DRAG_MOLECULE = 'drag';
 const MESSAGE_PULL_MOLECULE = 'pull';
 const MESSAGE_RUN_MINIMIZATION = 'run_minimization';
 
 const MESSAGE_REMOVE_FILE = 'remove_file';
+const MESSAGE_CLEAR = 'clear';
 
 const MESSAGE_FIX_RECENTER = 'fix_recenter';
 const MESSAGE_FIX_SHAKE = 'fix_shake';

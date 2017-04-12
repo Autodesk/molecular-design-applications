@@ -19,7 +19,7 @@ xhr.onload = function() {
 xhr.send(null);
 
 /******************************* LAMMPS Variables *******************************/
-const NAME_FIX_NVT = "fix_nvt";
+const NAME_FIX_NVE = "fix_nve";
 const NAME_FIX_ADDFORCE = "fix_addforce";
 const NAME_FIX_RECENTER = "fix_recenter";
 const NAME_FIX_LANGEVIN = "fix_langevin";
@@ -65,7 +65,8 @@ onmessage = function(e) {
 	/** @type {...} message[1]  **/
 	let message = [];
 	
-	switch(e.data[0]) {	
+	switch(e.data[0]) {
+
 	// Create lammps system
 	case MESSAGE_LAMMPS_DATA:
 	case MESSAGE_SNAPSHOT_DATA:
@@ -103,14 +104,12 @@ onmessage = function(e) {
 			let dataFileName = id.toString() + ".data";
 			FS.createDataFile(dirPath, dataFileName, molData, true, true);
 			let readDataCmd = "read_data " + dirPath + dataFileName;
-			//console.log(readDataCmd);
 			lmpsForWeb.execute_cmd(readDataCmd);		
 		}
 		//  MESSAGE_SNAPSHOT_DATA
 		else {
 			let dataFileName = e.data[1];
 			let readRestartCmd = "read_restart " + dirPath + dataFileName;
-			//console.log(readRestartCmd);
 			lmpsForWeb.execute_cmd(readRestartCmd);
 		}
 
@@ -139,6 +138,13 @@ onmessage = function(e) {
 		postMessage(message);
 		break;
 
+	case MESSAGE_CLEAR:
+		if(lmpsForWeb == null || lmpsForWeb == undefined)
+			break;
+		lmpsForWeb.check_and_refresh();
+		lmpsForWeb.remove_all_fix();
+		break;	
+
 	// group atoms together 
 	case MESSAGE_GROUP_ATOMS:
 		if(lmpsForWeb == null || lmpsForWeb == undefined)
@@ -147,35 +153,22 @@ onmessage = function(e) {
 		let groupSettings = e.data[1];
 	
 		if(groupSettings.length != 2 || groupSettings[1] == null || groupSettings[1] == undefined) {
-			//console.log("WORKER: Invalid atom selection");
 			break;
 		}
 		let groupName = groupSettings[0];	
 		let atomIndices = groupSettings[1];
-	
+		
 		let atomIdsString = "";
 		for(let i = 0; i < atomIndices.length; i++) {
 			let atomId = atomIndices[i] + 1;
 			atomIdsString = atomIdsString + atomId.toString() + " "; 
 		}
-		lmpsForWeb.set_atoms_group(groupName, atomIdsString.trim());
-		break;
 
-	// Set temperature settings for nvt simulation	
-	case MESSAGE_NVT:
-		if(lmpsForWeb == null || lmpsForWeb == undefined)
-			break; 
+		if(lmpsForWeb.does_group_exist(groupName))
+			lmpsForWeb.execute_cmd("group " + groupName + " clear");
 		
-		let tempValues = e.data[1];
-		if(tempValues == null || tempValues.length != 3) {
-			//console.log('WORKER: Enter temp setting');
-			break;
-		}
-		// apply settings
-		
-		let nvtFixCmd = "fix " + NAME_FIX_NVT + " all nvt temp " + tempValues[0].toString() + " " + tempValues[1].toString() + " " + tempValues[2].toString(); 
-		//console.log("WORKER: " + nvtFixCmd); 
-		lmpsForWeb.add_fix(NAME_FIX_NVT, nvtFixCmd);	
+		let groupCmd = "group " + groupName + " id " + atomIdsString.trim();
+		lmpsForWeb.execute_cmd(groupCmd);
 		break;
 
 	case MESSAGE_LANGEVIN:
@@ -184,15 +177,17 @@ onmessage = function(e) {
 		
 		let langeTemp = e.data[1];
 		if(langeTemp == null || langeTemp.length != 3) {
-			//console.log('WORKER: Enter temp setting');
 			break;
 		}
-		// apply settings
-		let nveFixCmd = "fix fix_nve all nve";
-		lmpsForWeb.add_fix("fix_nve", nveFixCmd);	
+		
+		// apply nve 
+		let nveFixCmd = "fix " + NAME_FIX_NVE + " all nve";
+		lmpsForWeb.execute_cmd(nveFixCmd);
+
+		// apply langevin	
 		let langevinFixCmd = "fix " + NAME_FIX_LANGEVIN + " all langevin " + langeTemp[0].toString() + " " + langeTemp[1].toString() + " " + langeTemp[2].toString() + " 48279"; 
-		//console.log("WORKER: " + langevinFixCmd); 
-		lmpsForWeb.add_fix(NAME_FIX_LANGEVIN, langevinFixCmd);	
+		lmpsForWeb.execute_cmd(langevinFixCmd);	
+		
 		break;
 	
 	// Fix shake by element mass
@@ -208,15 +203,10 @@ onmessage = function(e) {
 		let massStringValue = shakeSettings[1];	// masses of elements to shake
 		
 		// if mass string value is undefined, remove the fix with the shake ID
-		if(massStringValue == null || massStringValue == undefined)
-		{
-			lmpsForWeb.remove_fix(shakeName);
-		}
-		else
+		if(massStringValue != null && massStringValue != undefined)
 		{
 			let shakeCmd = "fix " + shakeName + " all shake 0.0001 20 0 m " + massStringValue;
-			//console.log("WORKER: " + shakeCmd);
-			lmpsForWeb.add_fix(shakeName, shakeCmd);
+			lmpsForWeb.execute_cmd(shakeCmd);
 		}				
 
 		break;
@@ -229,13 +219,13 @@ onmessage = function(e) {
 		let recenter = e.data[1];
 		if(recenter)
 		{
-			let recenterCmd = "fix " + NAME_FIX_RECENTER + " all recenter INIT INIT INIT"; 
-			//console.log("WORKER: " + recenterCmd);
-			lmpsForWeb.add_fix(NAME_FIX_RECENTER, recenterCmd);
+			let recenterCmd = "fix " + NAME_FIX_RECENTER + " all recenter INIT INIT INIT";
+			lmpsForWeb.execute_cmd(recenterCmd);
 		}
-		else
+		else if(lmpsForWeb.does_fix_exist(NAME_FIX_RECENTER))
 		{
-			lmpsForWeb.remove_fix(NAME_FIX_RECENTER);
+			// remove fix if it exists
+			lmpsForWeb.execute_cmd("unfix " + shakeName);
 		}
 		break;
 	
@@ -281,8 +271,7 @@ onmessage = function(e) {
 			message.push(MESSAGE_POSITION_DATA);
 			message.push(posArray);
 			postMessage(message);
-			//console.log("WORKER: Successfully ran dynamics!");
-		
+					
 		} catch(err) {
 			lmpsForWeb.delete();
 			lmpsForWeb = null;
@@ -303,24 +292,13 @@ onmessage = function(e) {
 		/** @type {!Array<number>} */	
 		let vector = e.data[1];	
 		if(vector == null || vector.length != 3 || !lmpsForWeb.does_group_exist(NAME_GROUP_INTERACTION)) {
-			//console.log('WORKER: Could not displace atoms!');
 			break;
 		}
-		
 			
 		try {
 			// Displace atoms
 			let displaceCmd = "displace_atoms " + NAME_GROUP_INTERACTION + " move " + vector[0].toString() + " "  + vector[1].toString() + " " + vector[2].toString();
-			lmpsForWeb.execute_cmd(displaceCmd);
-
-			let runNum = lmpsForWeb.minimize(10);
-			let posArray = lmpsForWeb.get_frames(runNum);
-			
-			message.length = 0;
-			message.push(MESSAGE_POSITION_DATA);
-			message.push(posArray);
-			//console.log("WORKER: Successfully ran interaction!");
-			postMessage(message);
+			lmpsForWeb.execute_cmd(displaceCmd);			
 		} catch(err) {
 			lmpsForWeb.delete();
 			lmpsForWeb = null;		
@@ -340,14 +318,14 @@ onmessage = function(e) {
 		let addForceVector = e.data[1];
 		
 		// If force vector isn't specified or interaction group does not exist, don't add the fix
-		if(addForceVector == null || addForceVector ==undefined || addForceVector.length !=3 || !lmpsForWeb.does_group_exist(NAME_GROUP_INTERACTION)) {
-			lmpsForWeb.remove_fix(NAME_FIX_ADDFORCE);
+		if(addForceVector == null || addForceVector == undefined || addForceVector.length !=3 || !lmpsForWeb.does_group_exist(NAME_GROUP_INTERACTION)) {
+			if(lmpsForWeb.does_fix_exist(NAME_FIX_ADDFORCE))
+				lmpsForWeb.execute_cmd("unfix " + NAME_FIX_ADDFORCE);
 		}
 		else {
 	
 			let addForceCmd = "fix " + NAME_FIX_ADDFORCE + " " + NAME_GROUP_INTERACTION + " addforce " + addForceVector[0].toString() + " " + addForceVector[1].toString() + " " + addForceVector[2].toString();
-			//console.log("WORKER: " + addForceCmd);
-			lmpsForWeb.add_fix(NAME_FIX_ADDFORCE, addForceCmd);
+			lmpsForWeb.execute_cmd(addForceCmd);
 		}	
 			
 		break;	
@@ -360,16 +338,24 @@ onmessage = function(e) {
 		let outputFreq = e.data[1];
 		if(outputFreq <= 0)
 			break;
+	
+		try {	
+			let runNum = lmpsForWeb.minimize(outputFreq);
+			let posArray = lmpsForWeb.get_frames(runNum);
+			
+			message.length = 0;
+			message.push(MESSAGE_POSITION_DATA);
+			message.push(posArray);
+			postMessage(message); 
+		} catch (error) {
+			lmpsForWeb.delete();
+			lmpsForWeb = null;		
+	
+			message.length = 0;
+			message.push(MESSAGE_ERROR);
+			postMessage(message);
+		} 
 		
-		let runNum = lmpsForWeb.minimize(outputFreq);
-		let posArray = lmpsForWeb.get_frames(runNum);
-		
-		message.length = 0;
-		message.push(MESSAGE_POSITION_DATA);
-		results.push(posArray);
-		//console.log("WORKER: Successfully ran minimization");
-		postMessage(results); 
-		 
 		break;
 	
 	case MESSAGE_REMOVE_FILE:
@@ -381,7 +367,7 @@ onmessage = function(e) {
 			let filePath = dirPath + e.data[1];
 			FS.unlink(filePath);
 		} catch(e) {
-			//console.log("WORKER: Could not delete file");	
+			console.log("WORKER: Could not delete file");	
 		}
 		
 		break;
