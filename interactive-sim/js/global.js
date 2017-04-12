@@ -104,10 +104,6 @@ function fireSimulation()
 			gLammpsWorker.postMessage([MESSAGE_PULL_MOLECULE, gVector]);
 		}
 	}
-	else /* undefined - no interaction */ {
-		// remove addforce fix in case it was set from earlier
-		gLammpsWorker.postMessage([MESSAGE_PULL_MOLECULE, undefined]);	
-	}
 
 	let new_temp = [gStartTemp, gEndTemp, gDampTemp];
 	gLammpsWorker.postMessage([MESSAGE_LANGEVIN, new_temp]);

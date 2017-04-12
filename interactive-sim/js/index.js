@@ -50,7 +50,7 @@ function initWorker() {
 				// load from snapshot
 				else {
 					gReady = true;
-					togglePlay(false);	
+					togglePlay(true);
 				}
 			}
 			break;
@@ -195,8 +195,7 @@ function setUpNew(mol) {
 // Kick start the simulation 
 function setUpFromSnapshot(filename) {
 	gReady = false;
-	togglePlay(false);
-	
+
 	// Create from latest snapshot (automatically saved not saved by user) 
 	if (filename == undefined || filename == null)
 		gLammpsWorker.postMessage([MESSAGE_SNAPSHOT_DATA, undefined]);	

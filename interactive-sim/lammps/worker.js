@@ -318,15 +318,10 @@ onmessage = function(e) {
 		let addForceVector = e.data[1];
 		
 		// If force vector isn't specified or interaction group does not exist, don't add the fix
-		if(addForceVector == null || addForceVector == undefined || addForceVector.length !=3 || !lmpsForWeb.does_group_exist(NAME_GROUP_INTERACTION)) {
-			if(lmpsForWeb.does_fix_exist(NAME_FIX_ADDFORCE))
-				lmpsForWeb.execute_cmd("unfix " + NAME_FIX_ADDFORCE);
-		}
-		else {
-	
+		if(addForceVector != null && addForceVector != undefined && addForceVector.length == 3) {
 			let addForceCmd = "fix " + NAME_FIX_ADDFORCE + " " + NAME_GROUP_INTERACTION + " addforce " + addForceVector[0].toString() + " " + addForceVector[1].toString() + " " + addForceVector[2].toString();
 			lmpsForWeb.execute_cmd(addForceCmd);
-		}	
+		}
 			
 		break;	
 
