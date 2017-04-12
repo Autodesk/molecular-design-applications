@@ -249,7 +249,7 @@ onmessage = function(e) {
 			
 			// log time	
 			let endTime = new Date().getTime();
-			let timeMs = endTime - startTime;
+			let time = (endTime - startTime) / 1000;
 			
 			// send energy analysis
 			let dataString = lmpsForWeb.get_energy(runNum);	
@@ -262,7 +262,9 @@ onmessage = function(e) {
 			// send performance	
 			message.length = 0;
 			message.push(MESSAGE_PERFORMANCE);
-			message.push(timeMs);	
+			
+			let framesPerSec = Math.floor(totIter/outputFreq) / time 
+			message.push(framesPerSec);	
 			postMessage(message);
 
 			// send positions

@@ -101,8 +101,8 @@ function initWorker() {
 			break;
 		
 		case MESSAGE_PERFORMANCE:
-			let nspd = gTimestep * gDuration * 86.4 / e.data[1];
-			document.getElementById('TextPerformance').innerText = nspd.toString();
+			let framesPerSec = e.data[1];
+			document.getElementById('TextPerformance').innerText = framesPerSec.toString();
 			break;
 		
 		case MESSAGE_SIMULATION_BOX:
