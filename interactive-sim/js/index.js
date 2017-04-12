@@ -146,26 +146,36 @@ function setUpNew(mol) {
 	var loadButtons = document.getElementsByClassName('BtnLoadNew');
 	setElementsClass(loadButtons, 'BtnLoadNew btn btn-default');
 	switch(mol) {
-	case '1yu8-20-50':
-		loadedMol.lmpsData = LAMMPS_1YU8_20_50;
-		loadedMol.pdbData = PDB_1YU8_20_50;
+	case '1yu8':
+		loadedMol.lmpsData = LAMMPS_1YU8;
+		loadedMol.pdbData = PDB_1YU8;
+		if(loadedMol.name != mol) {
+			gDuration = 10;
+			gOutputFreq = 10;
+		}
+		
+		document.getElementById('BtnLoad1yu8').className = 'BtnLoadNew btn btn-primary';
+		break;
+	case '1yu8-0-30':
+		loadedMol.lmpsData = LAMMPS_1YU8_0_30;
+		loadedMol.pdbData = PDB_1YU8_0_30;
 		if(loadedMol.name != mol) {
 			gDuration = 30;
 			gOutputFreq = 30;
 		}
 		
-		document.getElementById('BtnLoadRes-20-50').className = 'BtnLoadNew btn btn-primary';
+		document.getElementById('BtnLoadRes-0-30').className = 'BtnLoadNew btn btn-primary';
 		break;
 
-	case '1yu8-11-20':
+	case '1yu8-30-40':
 	default:
-		loadedMol.lmpsData = LAMMPS_1YU8_11_20;
-		loadedMol.pdbData = PDB_1YU8_11_20;	
+		loadedMol.lmpsData = LAMMPS_1YU8_30_40;
+		loadedMol.pdbData = PDB_1YU8_30_40;	
 		if(loadedMol.name != mol) {
 			gDuration = 100;
 			gOutputFreq = 100;
 		}
-		document.getElementById('BtnLoadRes-11-20').className = 'BtnLoadNew btn btn-primary';
+		document.getElementById('BtnLoadRes-30-40').className = 'BtnLoadNew btn btn-primary';
 		break;
 
 	}
