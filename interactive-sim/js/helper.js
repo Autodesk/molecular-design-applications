@@ -55,7 +55,7 @@ function drawArrows(selectedAtoms, vector) {
 			let posArray = latestFrame.positions;
 			let origin = new THREE.Vector3(posArray[posIndex], posArray[posIndex+1], posArray[posIndex+2]);
 			let dir = new THREE.Vector3(vector[0]/length, vector[1]/length, vector[2]/length); 
-			myViewer.drawArrow(dir, origin, 20, 0xe74c3c);	
+			myViewer.drawArrow(dir, origin, length, 0xf1c40f);	
 		}
 		prevAtomIdx = selectedAtoms[j];
 	}
