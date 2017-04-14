@@ -1,26 +1,20 @@
 version: '2'
 
+volumes:
+  redis-data:
+    driver: local
+
 services:
+
   server:
-    build:
-      context: .
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./server/public:/app/server/public
-      - ./server/bin:/app/server/bin
-      - ./server/constants:/app/server/constants
-      - ./server/etc:/app/server/etc
-      - ./server/main:/app/server/main
-      - ./server/routes:/app/server/routes
-      - ./server/views:/app/server/views
-      - ./server/test:/app/server/test
-      - ./server/utils:/app/server/utils
-      - ./server/services:/app/server/services
-      - ./shared:/app/shared
-      - ./tmp:/tmp
-      # Uncomment this if you want to do client development
-      # - ./client/dist:/app/client/dist
-    command: ["nodemon", "-e", "js,json,www", "-w", "./", "-w", "./bin/www.js", "bin/www.js"]
+    command: ["node", "bin/www"]
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: "4000"
+    image: "${IMAGE}"
     environment:
       PGHOST: db
       CCC: "ccc:9000"
@@ -28,9 +22,9 @@ services:
       FRONTEND_URL: "http://localhost:4000"
       URL: "http://localhost:4000"
       REDIS_HOST: "redis"
-      FLUENT_PORT: '24224'
-      BLUEBIRD_DEBUG: '1'
-      FLUENT: '1'
+      FLUENT_PORT: "24224"
+      FLUENT: "1"
+      TRAVIS: "1"
     links:
       - redis
       - ccc
@@ -43,9 +37,9 @@ services:
     environment:
       # https://hub.docker.com/_/postgres/
       POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "MSTPGMASTER"
+      POSTGRES_PASSWORD: "MSTPGMASTER"      
     ports:
-      - "5432:5432"
+      - "5432"
 
   redis:
     restart: always
@@ -54,12 +48,8 @@ services:
     ports:
       #Don't expose this port to the host, only linked containers.
       - "6379"
-    logging:
-      driver: "none"
     volumes:
       - ./server/etc/redis/redis.conf:/usr/local/etc/redis/redis.conf
-    logging:
-      driver: none
 
   ccc:
     image: "quay.io/bionano/cloud-compute-cannon:665d82fc"
@@ -74,23 +64,16 @@ services:
       #worker containers to map the local file system to /inputs+/outputs within
       #the container. Only used for local docker providers (not cloud)
       HOST_PWD: "$PWD"
-      LOCAL: "true"
       #Sets the max log level (bunyan where 10=trace 40=warn)
-      LOG_LEVEL: "20"
+      LOG_LEVEL: "40"
       STORAGE_HTTP_PREFIX: 'http://localhost:9000/'
-      SCALE_UP_CONTROL: "external"
-      SCALE_DOWN_CONTROL: "external"
       REMOVE_JOBS_ON_STARTUP: 'true'
-      DISABLE_STARTUP_TEST: 'false'
-      ENABLE_FLUENT: 'true'
-      FLUENT_PORT: '24224'
+      DISABLE_STARTUP_TEST: 'true'
+      ENABLE_FLUENT: '0'
     links:
       - redis
-      - fluentd
 
   fluentd:
     image: "fluent/fluentd"
     ports:
       - "24224"
-    logging:
-      driver: "none"

@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
+echo "TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
+echo "TRAVIS_REPO_SLUG=$TRAVIS_REPO_SLUG"
+
+#Temporary workaround getting the viewer code into the build
+if [ ! -z "$TIRRENU_URL" ]; then
+	mkdir -p ./molecule_viewer/
+	if [ ! -f ./molecule_viewer/tirrenu-1.3.5.tgz ]; then
+	    echo "Downloading $TIRRENU_URL"
+	    wget -P ./molecule_viewer/ $TIRRENU_URL
+	fi
+else
+	echo "Cannot download tirrenu package, TIRRENU_URL not specified"
+	exit -1
+fi
+
+GIT_TAG=`git rev-parse HEAD`
+if [ ! -z "$TRAVIS_COMMIT" ]; then
+	GIT_TAG=$TRAVIS_COMMIT
+fi
+GIT_TAG=${GIT_TAG:0:8}
+
+echo "VERSION=$GIT_TAG"
+REPO_NAME="mdtapps_server:$GIT_TAG"
+
+#First build locally the docker images for the minimal CCC server
+echo "Building and tagging images"
+set -e
+git submodule update --init --recursive
+
+echo "$GIT_TAG" > VERSION
+docker build -t $REPO_NAME .
+
+echo "Built $REPO_NAME"
+
+DC="docker-compose -f docker-compose.travis.yml "
+$DC stop
+$DC rm -fv
+$DC build
+echo "Running tests"
+PWD=$PWD IMAGE=$REPO_NAME VERSION=$GIT_TAG $DC up --abort-on-container-exit
+
+if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_REPO_SLUG" == "Autodesk/molecular-simulation-tools" ];
+	then
+		#If the tests pass, push the image to quay.io
+		if [ ! -z "$QUAY_USERNAME" ] && [ ! -z "$QUAY_PASSWORD" ]; then
+			echo "Pushing images to quay.io"
+			#Make sure we are logged into quay.io
+			QUAY_PREFIX="quay.io/bionano"
+			docker login --username $QUAY_USERNAME --password $QUAY_PASSWORD quay.io
+			docker tag $REPO_NAME $QUAY_PREFIX/$REPO_NAME
+			docker push $QUAY_PREFIX/$REPO_NAME
+			echo "Successfully pushed $QUAY_PREFIX/$REPO_NAME"
+		else
+			echo "QUAY_USERNAME and QUAY_PASSWORD are not set, skipping docker image push to quay.io";
+		fi
+fi
+

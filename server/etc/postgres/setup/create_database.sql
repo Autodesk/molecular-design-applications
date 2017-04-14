@@ -1,0 +1,1 @@
+CREATE DATABASE "mstdbv1" TEMPLATE=template1 ;

@@ -7,5 +7,7 @@ services:
     environment:
       CCC: "internal-lb.${BNR_ENVIRONMENT}.bionano.bio:9000"
       REDIS_HOST: "redis.${BNR_ENVIRONMENT}.bionano.bio"
+      #share sql postgress cluster with gctor
+      PGHOST: "gctor-db${BNR_ENV_URL_SUFFIX}.bionano.bio"
     logging:
       driver: json-file
