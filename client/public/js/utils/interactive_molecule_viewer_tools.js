@@ -1,6 +1,6 @@
 import interactiveSimConstants from '../constants/interactive_sim_constants';
 
-const InteractionTool = {
+const interactionTool = {
   names: [interactiveSimConstants.NAME_VIEWER_INTERACTION_TOOL],
   active: false,
   cachedX: null,
@@ -95,4 +95,4 @@ const InteractionTool = {
   },
 };
 
-export default InteractionTool;
+export default interactionTool;

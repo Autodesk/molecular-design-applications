@@ -57,12 +57,12 @@ class View extends React.Component {
       this.moleculeViewerW.addModel(modelData);
 
       // TODO: better way to update the position from other components
-      window.updateInteractiveMV = positionData => {
+      window.updateInteractiveMV = (positionData) => {
         this.moleculeViewerW.applyAnimationWithPositions(positionData);
       };
 
       // TODO: better way to draw arrows
-      window.drawArrowsOnInteractiveMV = vector => {
+      window.drawArrowsOnInteractiveMV = (vector) => {
         this.moleculeViewerW.drawArrows(window.gAtomSelection, vector);
       };
     } else if (oldModelData && this.moleculeViewerW) {

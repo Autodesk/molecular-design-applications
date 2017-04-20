@@ -3,7 +3,7 @@ We use Autodesk Molecule Viewer to display and navigate molecular data. Autodesk
 */
 import $ADSKMOLVIEW from 'tirrenu';
 import interactiveSimConstants from '../constants/interactive_sim_constants';
-import InteractionTool from './interactive_molecule_viewer_tools';
+import interactionTool from './interactive_molecule_viewer_tools';
 
 const MOL_VIEW_INITIALIZED = 'viewerInitialized';
 const MOL_VIEW_MODEL_LOADED = 'Nano.ModelEndLoaded';
@@ -38,7 +38,7 @@ class InteractiveMoleculeViewerWrapper {
 
         // register interaction tool
         this.moleculeViewer.mv.toolController
-          .registerTool(InteractionTool);
+          .registerTool(interactionTool);
         resolve();
       };
 

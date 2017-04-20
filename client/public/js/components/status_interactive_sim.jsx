@@ -27,8 +27,8 @@ class StatusInteractiveSim extends React.Component {
       shakeHydrogen: false,
       interactionMode: 'pull',
 
-      energy: NaN,
-      performance: NaN,
+      energy: 0.0,
+      performance: 0.0,
     };
 
     this.startTemp = 300.0;
@@ -252,14 +252,6 @@ class StatusInteractiveSim extends React.Component {
       this.isRunning = !this.isRunning;
     }
 
-    // Reset button text
-    const buttonLabel = document.getElementById('TextTogglePlay');
-    if (this.isRunning) {
-      buttonLabel.innerHTML = 'PAUSE';
-    } else {
-      buttonLabel.innerHTML = 'PLAY';
-    }
-
     this.fireSimulation();
   }
 
@@ -271,7 +263,7 @@ class StatusInteractiveSim extends React.Component {
           className="button form setting-block"
           onClick={this.playSimulation}
         >
-          <div id="TextTogglePlay">PLAY</div>
+          <div>{this.isRunning ? 'PAUSE' : 'PLAY'}</div>
         </button>
         <div className="input">
           <label className="bodyFont">

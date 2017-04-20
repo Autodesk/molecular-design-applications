@@ -7,10 +7,9 @@ function setUpModule() {
   self.Module = {
     preRun: [],
     print(text) {
-      if (LAMMPS_DEBUG) {
+      if (LAMMPS_DEBUG || text.indexOf('ERROR') >= 0) {
         console.log(text);
       }
-      return;
     },
     postRun() {
       console.log('Finished Running Main');
