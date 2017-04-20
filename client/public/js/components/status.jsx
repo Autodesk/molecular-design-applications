@@ -106,6 +106,7 @@ function Status(props) {
     } else if (props.selection.type === selectionConstants.WORKFLOW_NODE_INTERACTIVE_SIM) {
       selection = (
         <StatusInteractiveSim />
+        // TODO: Pass lammps data to Status Interactive Sim component
       );
     } else if (
       props.selection.type === selectionConstants.WORKFLOW_NODE_RESULTS &&

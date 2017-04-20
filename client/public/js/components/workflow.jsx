@@ -53,6 +53,7 @@ function Workflow(props) {
   const hideStatus = props.workflow.fetching ||
     props.workflow.run.fetchingDataError;
 
+  // TOOD: Pass lammps data to Status component
   return (
     <div className="workflow">
       <WorkflowSteps

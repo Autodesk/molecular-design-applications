@@ -63,6 +63,7 @@ class StatusInteractiveSim extends React.Component {
 
   componentWillUnmount() {
     this.playSimulation(false);
+    // Destroy lammps object and terminates web worker thread
     this.lammpsWorker.postMessage([interactiveSimConstants
       .MESSAGE_WORKER_TERMINATE]);
   }
@@ -245,7 +246,7 @@ class StatusInteractiveSim extends React.Component {
     }
 
     // If toggle value was given, set it to that value
-    if (typeof(value) === 'boolean') {
+    if (typeof value === 'boolean') {
       this.isRunning = value;
     } else {
       this.isRunning = !this.isRunning;
