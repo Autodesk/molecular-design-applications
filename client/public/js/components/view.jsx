@@ -34,7 +34,7 @@ class View extends React.Component {
     } else {
       this.renderMoleculeViewer(
         nextProps.modelData,
-        this.props,
+        this.props.modelData,
         nextProps.selectionStrings,
         nextProps.loading,
       );
