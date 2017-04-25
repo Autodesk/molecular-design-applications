@@ -26,6 +26,8 @@ function setUpModule() {
       (function () {
         console.log('WORKER: importing emscripten.js');
 
+        self.Module.asmjsCodeFile = '/interactive_sim/emscripten.asm.js';
+
         let memoryInitializer = '/interactive_sim/emscripten.js.mem';
         if (typeof self.Module.locateFile === 'function') {
           memoryInitializer = self.Module.locateFile(memoryInitializer);
