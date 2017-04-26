@@ -74,7 +74,7 @@ router.post('/executeWorkflow4Step0', (req, res, next) => {
     return next(new Error('No inputs'));
   }
 
-  return workflowUtils.executeWorkflow1Step0(inputs)
+  return workflowUtils.executeWorkflow4Step0(inputs)
     .then((jobResult) => {
       log.debug({ jobId: jobResult.jobId, f: 'executeWorkflow4Step0' });
       res.send(jobResult);
