@@ -1,7 +1,7 @@
 const cccUtils = require('../utils/ccc_utils');
 const log = require('../utils/log');
 
-const WORKFLOW_IMAGE = 'avirshup/mst:workflows-0.0.2b3';
+const WORKFLOW_IMAGE = 'avirshup/mst:workflows-0.0.2b4';
 
 const workflowUtils = {
   /**
