@@ -64,14 +64,15 @@ class StatusInteractiveSim extends React.Component {
   componentWillUnmount() {
     this.playSimulation(false);
 
-    // Destroy lammps object and terminates web worker thread
-    this.lammpsWorker.postMessage([interactiveSimConstants
-      .MESSAGE_WORKER_TERMINATE]);
-
     // Don't do anything when web worker sends message
+    // Since will be terminating wokere thread
     this.lammpsWorker.onmessage = function () {
       return;
     };
+
+    // Destroy lammps object and terminates web worker thread
+    this.lammpsWorker.postMessage([interactiveSimConstants
+      .MESSAGE_WORKER_TERMINATE]);
   }
 
   // Used for updating simulation settings.

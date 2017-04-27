@@ -101,8 +101,9 @@ self.onmessage = function (e) {
         console.log('WORKER: About to terminate worker');
         self.lmpsForWeb.delete();
         self.lmpsForWeb = null;
-        self.close();
       }
+      // Close worker thread
+      self.close();
       break;
     }
 
