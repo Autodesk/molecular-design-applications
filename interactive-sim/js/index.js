@@ -37,9 +37,6 @@ function initWorker() {
 		case MESSAGE_SNAPSHOT_DATA:
 			let success = e.data[1];
 			if (success) {
-				// get simulation box size
-				gLammpsWorker.postMessage([MESSAGE_SIMULATION_BOX]);
-		
 				// set global from input	
 				setGlobalsFromInput();
 				
@@ -103,10 +100,6 @@ function initWorker() {
 		case MESSAGE_PERFORMANCE:
 			let framesPerSec = e.data[1];
 			document.getElementById('TextPerformance').innerText = framesPerSec.toString();
-			break;
-		
-		case MESSAGE_SIMULATION_BOX:
-			setSimulationBox(e.data[1]);
 			break;
 
 		case MESSAGE_ERROR:

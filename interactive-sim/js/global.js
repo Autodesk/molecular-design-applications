@@ -80,7 +80,7 @@ function fireSimulation()
 	}
 
 	// clear settings for system 
-	gLammpsWorker.postMessage([MESSAGE_CLEAR]);
+	gLammpsWorker.postMessage([MESSAGE_CLEAR_SYSTEM]);
 
 	// Check user settings for timestemp
 	gLammpsWorker.postMessage("timestep " + gTimestep);

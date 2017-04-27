@@ -12,7 +12,9 @@ const MESSAGE_PULL_MOLECULE = 'pull';
 const MESSAGE_RUN_MINIMIZATION = 'run_minimization';
 
 const MESSAGE_REMOVE_FILE = 'remove_file';
-const MESSAGE_CLEAR = 'clear';
+const MESSAGE_CLEAR_SYSTEM = 'clear';
+
+const MESSAGE_WORKER_TERMINATE = 'worker_terminate';
 
 const MESSAGE_FIX_RECENTER = 'fix_recenter';
 const MESSAGE_FIX_SHAKE = 'fix_shake';
@@ -20,9 +22,9 @@ const MESSAGE_FIX_SHAKE = 'fix_shake';
 /****************** Index Onmessage Constants ******************/
 const MESSAGE_PERFORMANCE = 'performance';
 const MESSAGE_ERROR = 'error';
-const MESSAGE_SIMULATION_BOX = 'simulation_box';
 const MESSAGE_POSITION_DATA = 'position';
 const MESSAGE_ENERGY_DATA = 'energy';
+
 const MESSAGE_WORKER_READY = 'worker_ready';
 
 /*************** Worker && Index Onmessage Constants ************/

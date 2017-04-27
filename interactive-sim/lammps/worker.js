@@ -1,27 +1,51 @@
 /******************************* Requirements **************************************/
+const LAMMPS_DEBUG = false;
+
 importScripts('/interactive-sim/js/constant.js');
 setUpModule();
 
 function setUpModule() {
+  // Set up Module variable
+  self.Module = {
+    preRun: [],
+    print(text) { 
+      if (LAMMPS_DEBUG || text.indexOf('ERROR') >= 0) {
+        console.log(text);
+      }
+      return;
+    },
+    postRun() {
+      console.log('Finished Running Main');
+      postMessage([MESSAGE_WORKER_READY, true]);
+    },
+  };
+  if (typeof self.importScripts === 'function') {
+    // try wasm
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '/interactive-sim/lammps/emscripten.wasm', true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function () {
+      self.Module.wasmBinary = xhr.response;
+      (function () {
+        console.log('WORKER: importing emscripten.js');
+        self.Module.asmjsCodeFile = '/interactive-sim/lammps/emscripten.asm.js';
 
-	// Set up Module variable
-	self.Module = {
-		preRun: [],
-		print: function(text){ console.log(text); return; },
-		postRun: function(){ console.log("Finished Running Main"); postMessage([MESSAGE_WORKER_READY, true]); }
-	};		
-	console.log("WORKER: About to load wasm binary");
-	
-	// try wasm
-	let xhr = new XMLHttpRequest();
-	xhr.open('GET', '/interactive-sim/lammps/emscripten.wasm', true);
-	xhr.responseType = 'arraybuffer';
-	xhr.onload = function() {
-		Module.wasmBinary = xhr.response;
-		console.log("WORKER: importing emscripten.js");
-		importScripts('/interactive-sim/lammps/emscripten.js');
-	};
-	xhr.send(null);
+        let memoryInitializer = '/interactive-sim/lammps/emscripten.js.mem';
+        if (typeof self.Module.locateFile === 'function') {
+          memoryInitializer = self.Module.locateFile(memoryInitializer);
+        } else if (self.Module.memoryInitializerPrefixURL) {
+          memoryInitializer = self.Module.memoryInitializerPrefixURL + memoryInitializer;
+        }
+        const memXhr = self.Module.memoryInitializerRequest = new XMLHttpRequest();
+        memXhr.open('GET', memoryInitializer, true);
+        memXhr.responseType = 'arraybuffer';
+        memXhr.send(null);
+      }());
+
+      self.importScripts('/interactive-sim/lammps/emscripten.js');
+    };
+    xhr.send(null);
+  }
 }
 
 
@@ -73,6 +97,18 @@ onmessage = function(e) {
 	let message = [];
 	
 	switch(e.data[0]) {
+
+    // Delete lammps object and close the worker 
+    case MESSAGE_WORKER_TERMINATE: {
+      if (self.lmpsForWeb) {
+        console.log('WORKER: About to terminate worker');
+        self.lmpsForWeb.delete();
+        self.lmpsForWeb = null; 
+      }
+      // Close worker thread
+      self.close();
+      break;
+    }
 
 	// Create lammps system
 	case MESSAGE_LAMMPS_DATA:
@@ -153,7 +189,7 @@ onmessage = function(e) {
 		postMessage(message);
 		break;
 
-	case MESSAGE_CLEAR:
+	case MESSAGE_CLEAR_SYSTEM:
 		if(lmpsForWeb == null || lmpsForWeb == undefined)
 			break;
 		lmpsForWeb.check_and_refresh();
@@ -384,16 +420,6 @@ onmessage = function(e) {
 		
 		break;
 	
-	case MESSAGE_SIMULATION_BOX:
-		if(lmpsForWeb == null || lmpsForWeb == undefined)
-			break;
-	
-		message.length = 0;	
-		message.push(e.data[0]);	
-		message.push(lmpsForWeb.get_simulation_box());
-		postMessage(message);				
-		break;
-
 	// execute command
 	default:
 		console.log("WORKER: command - " + e.data);
