@@ -263,6 +263,16 @@ const ioUtils = {
 
     return '';
   },
+
+  getLammpsData(ios) {
+    const lammpsDataIndex = ioUtils.getIndexByExtension(ios, '.data');
+
+    if (lammpsDataIndex === -1) {
+      return null;
+    }
+
+    return ios.get(lammpsDataIndex).fetchedValue;
+  },
 };
 
 export default ioUtils;

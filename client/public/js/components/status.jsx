@@ -104,9 +104,11 @@ function Status(props) {
         />
       );
     } else if (props.selection.type === selectionConstants.WORKFLOW_NODE_INTERACTIVE_SIM) {
+      const lammpsModelData = ioUtils.getLammpsData(props.workflow.run.inputs);
       selection = (
-        <StatusInteractiveSim />
-        // TODO: Pass lammps data to Status Interactive Sim component
+        <StatusInteractiveSim
+          modelData={lammpsModelData}
+        />
       );
     } else if (
       props.selection.type === selectionConstants.WORKFLOW_NODE_RESULTS &&

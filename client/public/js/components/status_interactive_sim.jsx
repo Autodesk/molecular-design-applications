@@ -13,7 +13,7 @@ class StatusInteractiveSim extends React.Component {
   constructor(props) {
     super(props);
     this.lammpsWorker = new MyWorker();
-    this.lammpsData = props.lammpsData;
+    this.lammpsData = props.modelData;
 
     this.state = {
       /* Temporary Values */
@@ -421,7 +421,7 @@ class StatusInteractiveSim extends React.Component {
 
 
 StatusInteractiveSim.propTypes = {
-  lammpsData: React.PropTypes.string.isRequired,
+  modelData: React.PropTypes.string.isRequired,
 };
 
 export default StatusInteractiveSim;
