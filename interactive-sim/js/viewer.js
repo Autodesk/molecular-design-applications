@@ -26,9 +26,7 @@ const molViewModelSelected = () => {
 	
 	// if atoms were selected, group them!
 	if(selectedAtoms != null && selectedAtoms != undefined && selectedAtoms.length > 0) {
-		gAtomSelection = selectedAtoms;
-		gLammpsWorker.postMessage([MESSAGE_GROUP_ATOMS, [NAME_GROUP_INTERACTION, gAtomSelection]]);
-	
+		gAtomSelection = selectedAtoms;	
 	}
 	else {
 		gAtomSelection = null;
@@ -67,26 +65,23 @@ function resolve()
 	var numAtoms = myViewer.mv.TheMolMan.molModels[myViewer.getModelID()].maxNumAtoms;
 	console.log("Number of atoms : " + numAtoms);
 
-	if(numAtoms > 200)
+	if(numAtoms > 500)
 	{
-		// show freeze section
-		alert("Big molecules not supported yet");	
+		// Disable shake for big molecules 
+		document.getElementById('ChckboxShakeHydrogen').disabled = true;	
 	}
-	else
-	{
-		// add event listener
-		myViewer.mv.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, molViewModelSelected);	
-		
-		// activate interaction tool
-		myViewer.mv.toolController.activateTool(NAME_VIEWER_INTERACTION_TOOL);
-					
-		// set ready
-		gReady = true;
+	
+	// add event listener
+	myViewer.mv.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, molViewModelSelected);	
+	
+	// activate interaction tool
+	myViewer.mv.toolController.activateTool(NAME_VIEWER_INTERACTION_TOOL);
+				
+	// set ready
+	gReady = true;
 
-		// Unpause and play simulation 
-		togglePlay(true);
-	}
-
+	// Unpause and play simulation 
+	togglePlay(true);
 }
 
 function loadViewerPdb(pdbData) {

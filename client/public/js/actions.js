@@ -129,6 +129,12 @@ export function clickWorkflowNodeResults() {
   };
 }
 
+export function clickWorkflowNodeInteractiveSim() {
+  return {
+    type: actionConstants.CLICK_WORKFLOW_NODE_INTERACTIVE_SIM,
+  };
+}
+
 /**
  * When the user clicks on the run button
  * @param {String} workflowId

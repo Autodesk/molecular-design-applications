@@ -1346,14 +1346,14 @@ function integrateWasmJS(Module) {
 integrateWasmJS(Module);
 var ASM_CONSTS = [];
 STATIC_BASE = 1024;
-STATICTOP = STATIC_BASE + 346208;
+STATICTOP = STATIC_BASE + 345760;
 __ATINIT__.push({
  func: (function() {
   __GLOBAL__I_000101();
  })
 }, {
  func: (function() {
-  __GLOBAL__sub_I_lmps_web_cpp();
+  __GLOBAL__sub_I_lmps_web_new_cpp();
  })
 }, {
  func: (function() {
@@ -1365,7 +1365,7 @@ __ATINIT__.push({
  })
 });
 memoryInitializer = Module["wasmJSMethod"].indexOf("asmjs") >= 0 || Module["wasmJSMethod"].indexOf("interpret-asm2wasm") >= 0 ? "emscripten.js.mem" : null;
-var STATIC_BUMP = 346208;
+var STATIC_BUMP = 345760;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 var tempDoublePtr = STATICTOP;
@@ -8849,13 +8849,15 @@ var ___udivdi3 = Module["___udivdi3"] = asm["___udivdi3"];
 var setThrew = Module["setThrew"] = asm["setThrew"];
 var _bitshift64Lshr = Module["_bitshift64Lshr"] = asm["_bitshift64Lshr"];
 var __ZN10Lammps_Web8minimizeEi = Module["__ZN10Lammps_Web8minimizeEi"] = asm["__ZN10Lammps_Web8minimizeEi"];
+var __GLOBAL__sub_I_lmps_web_new_cpp = Module["__GLOBAL__sub_I_lmps_web_new_cpp"] = asm["__GLOBAL__sub_I_lmps_web_new_cpp"];
 var _bitshift64Shl = Module["_bitshift64Shl"] = asm["_bitshift64Shl"];
 var _fflush = Module["_fflush"] = asm["_fflush"];
-var __ZN10Lammps_Web7add_fixENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES6_ = Module["__ZN10Lammps_Web7add_fixENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES6_"] = asm["__ZN10Lammps_Web7add_fixENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES6_"];
+var __ZN10Lammps_Web14does_fix_existENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE = Module["__ZN10Lammps_Web14does_fix_existENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE"] = asm["__ZN10Lammps_Web14does_fix_existENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE"];
 var ___cxa_is_pointer_type = Module["___cxa_is_pointer_type"] = asm["___cxa_is_pointer_type"];
+var __ZN10Lammps_Web17check_and_refreshEv = Module["__ZN10Lammps_Web17check_and_refreshEv"] = asm["__ZN10Lammps_Web17check_and_refreshEv"];
 var _bitshift64Ashr = Module["_bitshift64Ashr"] = asm["_bitshift64Ashr"];
 var _memset = Module["_memset"] = asm["_memset"];
-var __ZN10Lammps_Web15set_atoms_groupENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES6_ = Module["__ZN10Lammps_Web15set_atoms_groupENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES6_"] = asm["__ZN10Lammps_Web15set_atoms_groupENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES6_"];
+var __ZN10Lammps_Web14remove_all_fixEv = Module["__ZN10Lammps_Web14remove_all_fixEv"] = asm["__ZN10Lammps_Web14remove_all_fixEv"];
 var __ZN10Lammps_Web12run_dynamicsEii = Module["__ZN10Lammps_Web12run_dynamicsEii"] = asm["__ZN10Lammps_Web12run_dynamicsEii"];
 var _sbrk = Module["_sbrk"] = asm["_sbrk"];
 var _memcpy = Module["_memcpy"] = asm["_memcpy"];
@@ -8877,7 +8879,6 @@ var stackRestore = Module["stackRestore"] = asm["stackRestore"];
 var ___getTypeName = Module["___getTypeName"] = asm["___getTypeName"];
 var __GLOBAL__sub_I_iostream_cpp = Module["__GLOBAL__sub_I_iostream_cpp"] = asm["__GLOBAL__sub_I_iostream_cpp"];
 var __ZN10Lammps_Web16does_group_existENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE = Module["__ZN10Lammps_Web16does_group_existENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE"] = asm["__ZN10Lammps_Web16does_group_existENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE"];
-var __ZN10Lammps_Web10remove_fixENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE = Module["__ZN10Lammps_Web10remove_fixENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE"] = asm["__ZN10Lammps_Web10remove_fixENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE"];
 var _pthread_cond_broadcast = Module["_pthread_cond_broadcast"] = asm["_pthread_cond_broadcast"];
 var ___errno_location = Module["___errno_location"] = asm["___errno_location"];
 var ___muldsi3 = Module["___muldsi3"] = asm["___muldsi3"];
@@ -8888,7 +8889,6 @@ var __ZN10Lammps_Web10get_energyEi = Module["__ZN10Lammps_Web10get_energyEi"] = 
 var establishStackSpace = Module["establishStackSpace"] = asm["establishStackSpace"];
 var ___uremdi3 = Module["___uremdi3"] = asm["___uremdi3"];
 var __ZN10Lammps_Web13save_snapshotENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE = Module["__ZN10Lammps_Web13save_snapshotENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE"] = asm["__ZN10Lammps_Web13save_snapshotENSt3__212basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE"];
-var __GLOBAL__sub_I_lmps_web_cpp = Module["__GLOBAL__sub_I_lmps_web_cpp"] = asm["__GLOBAL__sub_I_lmps_web_cpp"];
 var _malloc = Module["_malloc"] = asm["_malloc"];
 var _pthread_mutex_lock = Module["_pthread_mutex_lock"] = asm["_pthread_mutex_lock"];
 var __ZN10Lammps_Web14get_num_framesEv = Module["__ZN10Lammps_Web14get_num_framesEv"] = asm["__ZN10Lammps_Web14get_num_framesEv"];

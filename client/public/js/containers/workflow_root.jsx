@@ -11,6 +11,7 @@ import {
   clickWorkflowNodeLoad,
   clickWorkflowNodeEmail,
   clickWorkflowNodeResults,
+  clickWorkflowNodeInteractiveSim,
   initializeRun,
   initializeWorkflow,
   messageTimeout,
@@ -58,6 +59,9 @@ function mapDispatchToProps(dispatch) {
     },
     clickWorkflowNodeResults() {
       dispatch(clickWorkflowNodeResults());
+    },
+    clickWorkflowNodeInteractiveSim() {
+      dispatch(clickWorkflowNodeInteractiveSim());
     },
     initializeRun(workflowId, runId) {
       dispatch(initializeRun(workflowId, runId));

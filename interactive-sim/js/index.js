@@ -37,15 +37,14 @@ function initWorker() {
 		case MESSAGE_SNAPSHOT_DATA:
 			let success = e.data[1];
 			if (success) {
-				// get simulation box size
-				gLammpsWorker.postMessage([MESSAGE_SIMULATION_BOX]);
-		
 				// set global from input	
 				setGlobalsFromInput();
 				
 				// load molecule if Lammps data
 				if(e.data[0] == MESSAGE_LAMMPS_DATA)
 					loadViewerPdb(loadedMol.pdbData);
+				
+				// load from snapshot
 				else {
 					gReady = true;
 					togglePlay(true);
@@ -99,12 +98,8 @@ function initWorker() {
 			break;
 		
 		case MESSAGE_PERFORMANCE:
-			let nspd = gTimestep * gDuration * 86.4 / e.data[1];
-			document.getElementById('TextPerformance').innerText = nspd.toString();
-			break;
-		
-		case MESSAGE_SIMULATION_BOX:
-			setSimulationBox(e.data[1]);
+			let framesPerSec = e.data[1];
+			document.getElementById('TextPerformance').innerText = framesPerSec.toString();
 			break;
 
 		case MESSAGE_ERROR:
@@ -143,28 +138,39 @@ function setUpNew(mol) {
         }	
 		
 	// determine which molecule to load
+	var loadButtons = document.getElementsByClassName('BtnLoadNew');
+	setElementsClass(loadButtons, 'BtnLoadNew btn btn-default');
 	switch(mol) {
-	case '1yu8-1-10':
-		loadedMol.lmpsData = LMPS_1YU8_1_10;
-		loadedMol.pdbData = PDB_1YU8_1_10;
+	case '1yu8':
+		loadedMol.lmpsData = LAMMPS_1YU8;
+		loadedMol.pdbData = PDB_1YU8;
 		if(loadedMol.name != mol) {
-			gDuration = 20;
-			gOutputFreq = 20;
+			gDuration = 10;
+			gOutputFreq = 10;
 		}
-		document.getElementById('BtnLoadRes1-10').className = 'btn btn-primary';
-		document.getElementById('BtnLoadRes11-20').className = 'btn btn-default';
+		
+		document.getElementById('BtnLoad1yu8').className = 'BtnLoadNew btn btn-primary';
+		break;
+	case '1yu8-0-30':
+		loadedMol.lmpsData = LAMMPS_1YU8_0_30;
+		loadedMol.pdbData = PDB_1YU8_0_30;
+		if(loadedMol.name != mol) {
+			gDuration = 30;
+			gOutputFreq = 30;
+		}
+		
+		document.getElementById('BtnLoadRes-0-30').className = 'BtnLoadNew btn btn-primary';
 		break;
 
-	case '1yu8-11-20':
+	case '1yu8-30-40':
 	default:
-		loadedMol.lmpsData = LMPS_1YU8_11_20;
-		loadedMol.pdbData = PDB_1YU8_11_20;	
+		loadedMol.lmpsData = LAMMPS_1YU8_30_40;
+		loadedMol.pdbData = PDB_1YU8_30_40;	
 		if(loadedMol.name != mol) {
-			gDuration = 20;
-			gOutputFreq = 20;
+			gDuration = 100;
+			gOutputFreq = 100;
 		}
-		document.getElementById('BtnLoadRes1-10').className = 'btn btn-default';
-		document.getElementById('BtnLoadRes11-20').className = 'btn btn-primary';
+		document.getElementById('BtnLoadRes-30-40').className = 'BtnLoadNew btn btn-primary';
 		break;
 
 	}
@@ -182,8 +188,7 @@ function setUpNew(mol) {
 // Kick start the simulation 
 function setUpFromSnapshot(filename) {
 	gReady = false;
-	togglePlay(false);
-	
+
 	// Create from latest snapshot (automatically saved not saved by user) 
 	if (filename == undefined || filename == null)
 		gLammpsWorker.postMessage([MESSAGE_SNAPSHOT_DATA, undefined]);	

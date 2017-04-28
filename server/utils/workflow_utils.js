@@ -1,7 +1,7 @@
 const cccUtils = require('../utils/ccc_utils');
 const log = require('../utils/log');
 
-const WORKFLOW_IMAGE = 'avirshup/mst:workflows-0.0.1b6';
+const WORKFLOW_IMAGE = 'avirshup/mst:workflows-0.0.2b4';
 
 const workflowUtils = {
   /**
@@ -168,6 +168,37 @@ const workflowUtils = {
       });
   },
 
+  executeWorkflow4Step0(inputs) {
+    const jobJson = {
+      wait: true,
+      image: WORKFLOW_IMAGE,
+      inputs,
+      createOptions: {
+        Cmd: ['setuplammps',
+          '--preprocess', `/inputs/${inputs[0].name}`,
+          '--outputdir', '/outputs/'],
+      },
+    };
+
+    log.debug({ execute: 'executeWorkflow4Step0', job: JSON.stringify(jobJson).substr(0, 100) });
+    return workflowUtils.executeCCCJob(jobJson)
+      .then((jobResult) => {
+        log.debug(jobResult);
+        const outputs = [];
+        for (let i = 0; i < jobResult.outputs.length; i += 1) {
+          outputs.push({
+            name: jobResult.outputs[i],
+            type: 'url',
+            value: `${jobResult.outputsBaseUrl}${jobResult.outputs[i]}`,
+          });
+        }
+        return {
+          success: jobResult.exitCode === 0,
+          outputs,
+          jobResult,
+        };
+      });
+  },
 
   /**
    * https://docs.google.com/presentation/d/1qP-8fPpsgtJnZOlg96ySwPACZvGlxT1jIIgjBECoDAE/edit#slide=id.g1c36f8ea4a_0_0

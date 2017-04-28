@@ -1,0 +1,25 @@
+.status-interactive-sim {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  word-wrap: break-word; 
+
+  .setting-block {
+    margin-bottom: 10px;
+  }
+
+  .sectionDivider {
+      border-style: none;
+      border-top: 1px solid rgba(0, 0, 0, 0.7); 
+  }
+
+  .bodyFont {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.7);
+    padding-left: 4px;
+  }
+}
+
+

@@ -79,14 +79,21 @@ function fireSimulation()
 		return;
 	}
 
+	// clear settings for system 
+	gLammpsWorker.postMessage([MESSAGE_CLEAR_SYSTEM]);
+
 	// Check user settings for timestemp
 	gLammpsWorker.postMessage("timestep " + gTimestep);
 
 	// check if user interacted with molecule. If so, run minimization
-	if (gIsInteracting != undefined) {
+	if (gIsInteracting != undefined && gAtomSelection != undefined && gAtomSelection != null && gAtomSelection.length > 0) {
+		gLammpsWorker.postMessage([MESSAGE_GROUP_ATOMS, [NAME_GROUP_INTERACTION, gAtomSelection]]);
+	
 		// if drag, displace atoms and don't run dynamics
 		if (gIsInteracting == 'drag') {
 			gLammpsWorker.postMessage([MESSAGE_DRAG_MOLECULE, gVector]);
+			gLammpsWorker.postMessage([MESSAGE_RUN_MINIMIZATION, 10]);
+			
 			// drag is ONE TIME interaction
 			gIsInteracting = undefined;	
 			return;		
@@ -97,21 +104,17 @@ function fireSimulation()
 			gLammpsWorker.postMessage([MESSAGE_PULL_MOLECULE, gVector]);
 		}
 	}
-	else /* undefined - no interaction */ {
-		// remove addforce fix in case it was set from earlier
-		gLammpsWorker.postMessage([MESSAGE_PULL_MOLECULE, undefined]);	
-	}
 
-	// NORMAL DYNAMICS
 	let new_temp = [gStartTemp, gEndTemp, gDampTemp];
-	gLammpsWorker.postMessage([MESSAGE_NVT, new_temp]);
+	gLammpsWorker.postMessage([MESSAGE_LANGEVIN, new_temp]);
+	
 	// recenter
 	gLammpsWorker.postMessage([MESSAGE_FIX_RECENTER, gRecenter]);
+	
 	// shake hydrogen
 	if(gShakeHydrogen)
 		gLammpsWorker.postMessage([MESSAGE_FIX_SHAKE, [NAME_SHAKE_HYDROGEN, '1.0']]);
-	else
-		gLammpsWorker.postMessage([MESSAGE_FIX_SHAKE, [NAME_SHAKE_HYDROGEN, undefined]]);
+
 	gLammpsWorker.postMessage([MESSAGE_RUN_DYNAMICS, [gDuration, gOutputFreq]]);
 }
 

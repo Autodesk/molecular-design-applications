@@ -49,7 +49,7 @@ services:
       - redis-data:/data
 
   ccc:
-    image: "quay.io/bionano/cloud-compute-cannon:b02f129c"
+    image: "quay.io/bionano/cloud-compute-cannon:9eafc839"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./ccc_local_storage:/app/ccc_local_storage

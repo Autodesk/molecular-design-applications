@@ -48,6 +48,19 @@ const workflows = [
         ' thermodynamic integration',
     viewCount: 0,
   },
+  {
+    id: '4',
+    title: 'Interactive molecular dynamics simulation',
+    selectLigands: false,
+    bgColor: '#292E60',
+    bgIndex: 0,
+    color: '#2FE695',
+    comingSoon: false,
+    creatorImage: '/img/logo2.png',
+    description: 'Simulate molecular structures' +
+        ' and interact with them',
+    viewCount: 0,
+  }
 ];
 
 module.exports = workflows;
