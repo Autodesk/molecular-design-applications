@@ -179,6 +179,13 @@ function app(state = initialState, action) {
         state.run.set('pipeDatasByWidget', action.pipeDatasByWidget),
       );
 
+    /* CCC actions */
+    case actionConstants.CCC_RUN_TURBO_SUBMITTED:
+      return state.set(
+        'run',
+        state.run.set('pipeDatasByWidget', action.pipeDatasByWidget),
+      );
+
     default:
       return state;
   }

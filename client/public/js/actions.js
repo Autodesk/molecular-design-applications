@@ -445,6 +445,12 @@ export function runCCCTurbo(sessionId, widgetId, cccTurboBlob) {
         console.log(result);
         //TODO: pipe data back into the state
         //don't forget to check errors
+        dispatch({
+          type: actionConstants.CCC_RUN_TURBO_RESPONSE,
+          sessionId,
+          widgetId,
+          result,
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -468,11 +474,19 @@ export function runCCC(sessionId, widgetId, cccBlob) {
 
     const API_URL = process.env.API_URL || '';
 
-    axios.post(`${API_URL}/v1/ccc/run`, cccTurboBlob)
+    axios.post(`${API_URL}/v1/ccc/run/${sessionId}/${widgetId}`, cccBlob)
       .then((result) => {
         console.log(result);
+        //This will be the job id. The results will automatically be
+        //updated on the server, and piped back via the websocket
         //TODO: pipe data back into the state
         //don't forget to check errors
+        dispatch({
+          type: actionConstants.CCC_RUN_RESPONSE,
+          sessionId,
+          widgetId,
+          result
+        });
       })
       .catch((err) => {
         console.error(err);
