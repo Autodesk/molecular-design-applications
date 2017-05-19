@@ -12,7 +12,7 @@ const router = new express.Router();
  * See CCC.prototype.runTurbo for more complete descriptions of
  * parameters and results.
  */
-router.post('/runturbo', (req, res, next) => {
+router.post('/run/turbo', (req, res, next) => {
   config.ccc.runTurbo(req.body)
     .then(result => res.json(result))
     .catch(next);
@@ -36,6 +36,18 @@ router.post('/run/:sessionId/:widgetId', (req, res, next) => {
   }
 
   config.ccc.run(sessionId, widgetId, req.body)
+    .then((result) => {
+      assert(result.jobId);
+      res.json({ sessionId, jobId: result.jobId });
+    })
+    .catch(next);
+});
+
+router.post('/cwl/:sessionId/:widgetId', (req, res, next) => {
+  const sessionId = req.params.sessionId;
+  const widgetId = req.params.widgetId;
+
+  config.ccc.cwl(sessionId, widgetId, req.body)
     .then((result) => {
       assert(result.jobId);
       res.json({ sessionId, jobId: result.jobId });

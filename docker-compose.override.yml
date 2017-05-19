@@ -62,10 +62,12 @@ services:
       driver: none
 
   ccc:
-    image: "quay.io/bionano/cloud-compute-cannon:665d82fc"
+    image: "quay.io/bionano/cloud-compute-cannon:8c36434e"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./ccc_local_storage:/app/ccc_local_storage
+      # - ../cloud-compute-cannon/build/server:/app/server
+    # command: ["nodemon", "-w", "server", "server/cloud-compute-cannon-server.js"]
     ports:
       - "9000:9000"
     environment:
@@ -76,7 +78,7 @@ services:
       HOST_PWD: "$PWD"
       LOCAL: "true"
       #Sets the max log level (bunyan where 10=trace 40=warn)
-      LOG_LEVEL: "20"
+      LOG_LEVEL: "30"
       STORAGE_HTTP_PREFIX: 'http://localhost:9000/'
       SCALE_UP_CONTROL: "external"
       SCALE_DOWN_CONTROL: "external"

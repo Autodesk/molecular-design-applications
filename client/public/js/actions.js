@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { browserHistory } from 'react-router';
 import { List as IList } from 'immutable';
 import isEmail from 'validator/lib/isEmail';
@@ -426,5 +427,61 @@ export function changeMorph(morph) {
   return {
     type: actionConstants.CHANGE_MORPH,
     morph,
+  };
+}
+
+export function runCCCTurbo(sessionId, widgetId, cccTurboBlob) {
+  return (dispatch) => {
+    dispatch({
+      type: actionConstants.CCC_RUN_TURBO_SUBMITTED,
+      sessionId,
+      widgetId,
+    });
+
+    const API_URL = process.env.API_URL || '';
+
+    axios.post(`${API_URL}/v1/ccc/run/turbo`, cccTurboBlob)
+      .then((result) => {
+        console.log(result);
+        //TODO: pipe data back into the state
+        //don't forget to check errors
+      })
+      .catch((err) => {
+        console.error(err);
+        dispatch({
+          type: actionConstants.CCC_RUN_TURBO_ERROR,
+          sessionId,
+          widgetId,
+          error: err
+        });
+      });
+  };
+}
+
+export function runCCC(sessionId, widgetId, cccBlob) {
+  return (dispatch) => {
+    dispatch({
+      type: actionConstants.CCC_RUN_SUBMITTED,
+      sessionId,
+      widgetId,
+    });
+
+    const API_URL = process.env.API_URL || '';
+
+    axios.post(`${API_URL}/v1/ccc/run`, cccTurboBlob)
+      .then((result) => {
+        console.log(result);
+        //TODO: pipe data back into the state
+        //don't forget to check errors
+      })
+      .catch((err) => {
+        console.error(err);
+        dispatch({
+          type: actionConstants.CCC_RUN_ERROR,
+          sessionId,
+          widgetId,
+          error: err
+        });
+      });
   };
 }

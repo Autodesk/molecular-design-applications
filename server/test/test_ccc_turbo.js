@@ -38,7 +38,7 @@ cp /inputs/${value2Name} /outputs/${value2Name}
         method: 'post',
         body: turboJobParams,
         json: true,
-        url: `http://localhost:${process.env.PORT}/v1/ccc/runturbo`
+        url: `http://localhost:${process.env.PORT}/v1/ccc/run/turbo`
       };
 
       return request(options)

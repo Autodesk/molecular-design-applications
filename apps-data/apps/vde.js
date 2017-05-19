@@ -2,33 +2,71 @@ const widgetsConstants = require('molecular-design-applications-shared').widgets
 
 module.exports = {
   title: 'Calculate electronic vertical detachment energy',
-  selectLigands: false,
-  bgColor: '#292E60',
-  bgIndex: 3,
-  color: '#2FE695',
-  comingSoon: false,
-  creatorImage: '/img/logo2.png',
-  description: 'Calculate the electron binding energy of an' +
-      ' anionic doublet species using DFT',
+  version: "0.1-alpha",
+  meta: {
+    name: "VDE",
+    version: "0.0.1",
+    description: "Calculate the electron binding energy of an anionic doublet species using DFT",
+    git: "https://github.com/Autodesk/molecular-simulation-tools",
+    authors: [],
+    display: {
+      selectLigands: false,
+      bgColor: '#292E60',
+      bgIndex: 3,
+      color: '#2FE695',
+      comingSoon: false,
+      creatorImage: '/img/logo2.png',
+    }
+  },
   widgets: [
     {
-      id: widgetsConstants.LOAD,
-      type: widgetsConstants.LOAD,
-      title: 'Load Molecule',
-      outputs: [
+      id: "load_pdb",
+      type: widgetsConstants.RUN_DOCKER_CONTAINER_FAST,
+      meta: {
+        title: 'Load Molecule',
+      },
+      config: {
+        image: "avirshup/mst:workflows-0.0.alpha5",
+        command: ["minimize", "--preprocess", "/inputs/PDB_DATA"],
+      },
+      in: [
+        { id: 'PDB_DATA' },
+      ],
+      out: [
         { id: 'prep.pdb' },
         { id: 'prep.json' },
         { id: 'workflow_state.dill' },
       ],
     },
     {
-      id: widgetsConstants.RUN,
-      type: widgetsConstants.RUN,
-      title: 'Run',
+      id: "clean_pdb",
+      type: widgetsConstants.RUN_DOCKER_CONTAINER,
+      meta: {
+        title: 'Run',
+      },
+      config: {
+        image: "avirshup/mst:workflows-0.0.alpha5",
+        command: ["minimize", "--preprocess", "/inputs/PDB_DATA"],
+      },
       inputs: [
-        { id: 'prep.pdb', source: widgetsConstants.LOAD },
-        { id: 'prep.json', source: widgetsConstants.LOAD },
-        { id: 'workflow_state.dill', source: widgetsConstants.LOAD },
+        {
+          name: "prep.pdb",
+          source: {
+            id: "load_pdb", pipe: "prep.pdb"
+          }
+        },
+        {
+          name: "prep.json",
+          "source": {
+            id: "load_pdb", pipe: "prep.json"
+          }
+        },
+        {
+          name: "workflow_state.dill",
+          "source": {
+            id: "load_pdb", pipe: "workflow_state.dill"
+          }
+        }
       ],
       outputs: [
         { id: 'final_structure.pdb' },
@@ -44,11 +82,36 @@ module.exports = {
       type: widgetsConstants.RESULTS,
       title: 'Results',
       inputs: [
-        { id: 'final_structure.pdb', source: widgetsConstants.RUN },
-        { id: 'results.json', source: widgetsConstants.RUN },
-        { id: 'minstep.0.pdb', source: widgetsConstants.RUN },
-        { id: 'minstep.1.pdb', source: widgetsConstants.RUN },
-        { id: 'minstep_frames.json', source: widgetsConstants.RUN },
+        {
+          name: "final_structure.pdb",
+          source: {
+            id: "clean_pdb", pipe: "final_structure.pdb"
+          }
+        },
+        {
+          name: "results.json",
+          source: {
+            id: "clean_pdb", pipe: "results.json"
+          }
+        },
+        {
+          name: "minstep.0.pdb",
+          source: {
+            id: "clean_pdb", pipe: "minstep.0.pdb"
+          }
+        },
+        {
+          name: "minstep.1.pdb",
+          source: {
+            id: "clean_pdb", pipe: "minstep.1.pdb"
+          }
+        },
+        {
+          name: "minstep_frames.json",
+          source: {
+            id: "clean_pdb", pipe: "minstep_frames.json"
+          }
+        }
       ],
     },
   ],

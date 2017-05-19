@@ -231,6 +231,47 @@ Returns:
 
 The results will be computed out-of-band, and returned via the websocket (the server monitors the job internally).
 
+##### WSS
+
+A websocket request to the app root will initiate a websocket connection
+
+After the connection is established, the server needs to know what the app session is, by the client sending a message (stringified):
+
+
+	{
+        "jsonrpc": "2.0",
+        "method": jsonrpcConstants.SESSION,
+        "params": {
+        	"sessionId": "<session/run id>"
+        }
+    }
+
+The server will then send the latest session data, and will send a new state any time the state is changed on the server:
+
+	{
+		"session": "<session/runId>",
+		"widgets": {
+			"widget1": {
+				"out": {
+					"widget1pipe1": {
+						"type": "inline",
+						"value": "widgetId1Pipe1Value"
+					}
+				}
+			},
+			"widget2": {
+				"out": {
+					"widget2pipe1": {
+						"type": "inline",
+						"value": "widgetId2Pipe1Value"
+					}
+				}
+			}
+		}
+    }
+
+When the app session is changed, the websocket will automatically close.
+
 ##### GET workflow/:workflowId
 Returns the indicated workflow.
 

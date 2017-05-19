@@ -143,6 +143,19 @@ CCC.prototype.run = function run(sessionId, widgetId, jobBlob) {
     });
 };
 
+/**
+ * Cloud-compute-cannon CWL execution (see README)
+ */
+CCC.prototype.cwl = function run(sessionId, widgetId, cwl) {
+  return this.ccc
+    .then(ccc => ccc.cwl(cwl.git, cwl.sha, cwl.cwl, cwl.input, cwl.inputs))
+    .then((jobResult) => {
+      log.info({ sessionId, widgetId, jobId: jobResult.jobId, message: 'link' });
+      this.jobSessionQueue.add({ sessionId, widgetId, jobId: jobResult.jobId });
+      return jobResult;
+    });
+};
+
 CCC.prototype.processQueue = function processQueue(job, done) {
   log.debug(`Processing bull queue job=${JSON.stringify(job.data)}`);
   this.ccc
