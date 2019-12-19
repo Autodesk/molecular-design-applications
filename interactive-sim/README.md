@@ -3,7 +3,7 @@
 see [LAMMPS](http://lammps.sandia.gov/doc/Manual.html) for the powerful underlying software 
 see [Emscripten](http://kripken.github.io/emscripten-site/) to find out how we brought C++ into the web  
 
-> Welcome to Interactive Simulation web page developed by Autodesk's BioNano group. This webpage allows powerful simulation tool to run on your browser on-the-go. You no longer need to install the tools on your computer to run molecular dynamics. The webpage allows you to run complicated simulations on your browser with just a button click.  
+> Welcome to Interactive Simulation web page developed by Autodesk's Life Sciences group. This webpage allows powerful simulation tool to run on your browser on-the-go. You no longer need to install the tools on your computer to run molecular dynamics. The webpage allows you to run complicated simulations on your browser with just a button click.  
 
 
 <br />
